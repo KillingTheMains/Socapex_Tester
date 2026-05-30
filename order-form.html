@@ -408,6 +408,45 @@
     @media (max-width: 480px) {
       .card { padding-bottom: 32px; }
     }
+
+    .color-button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    .color-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #333;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .color-btn::before {
+      content: '';
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--btn-color);
+      border: 1px solid rgba(0,0,0,0.15);
+      flex-shrink: 0;
+    }
+    .color-btn:hover {
+      border-color: #aaa;
+    }
+    .color-btn.selected {
+      border-color: var(--btn-color);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--btn-color) 20%, transparent);
+      background: color-mix(in srgb, var(--btn-color) 8%, white);
+    }
   </style>
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
@@ -500,6 +539,21 @@
     </div>
 
     <hr class="divider" />
+
+    <hr class="divider" />
+
+    <!-- Voltmeter Color -->
+    <div class="field">
+      <label>Voltmeter LED Color <span class="req">*</span></label>
+      <div class="color-button-group" id="voltmeterGroup">
+        <button type="button" class="color-btn" data-color="Red"    onclick="selectVoltmeter(this)" style="--btn-color:#e53935;">Red</button>
+        <button type="button" class="color-btn" data-color="Green"  onclick="selectVoltmeter(this)" style="--btn-color:#43a047;">Green</button>
+        <button type="button" class="color-btn" data-color="Blue"   onclick="selectVoltmeter(this)" style="--btn-color:#1e88e5;">Blue</button>
+        <button type="button" class="color-btn" data-color="White"  onclick="selectVoltmeter(this)" style="--btn-color:#bdbdbd;">White</button>
+        <button type="button" class="color-btn" data-color="Orange" onclick="selectVoltmeter(this)" style="--btn-color:#fb8c00;">Orange</button>
+      </div>
+      <input type="hidden" id="voltmeterColor" name="voltmeterColor" required />
+    </div>
 
     <!-- Custom Bottom Text (optional) -->
     <div class="optional-section">
@@ -871,6 +925,13 @@ function resetForm() {
   document.getElementById('orderForm').style.display = '';
   window.scrollTo(0, 0);
 }
+
+  function selectVoltmeter(btn) {
+    document.querySelectorAll('#voltmeterGroup .color-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('voltmeterColor').value = btn.dataset.color;
+  }
+
 </script>
 </body>
 </html>
