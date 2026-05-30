@@ -409,44 +409,6 @@
       .card { padding-bottom: 32px; }
     }
 
-    .color-button-group {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 6px;
-    }
-    .color-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      border: 2px solid #ddd;
-      border-radius: 8px;
-      background: #fff;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      color: #333;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-    .color-btn::before {
-      content: '';
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: var(--btn-color);
-      border: 1px solid rgba(0,0,0,0.15);
-      flex-shrink: 0;
-    }
-    .color-btn:hover {
-      border-color: #aaa;
-    }
-    .color-btn.selected {
-      border-color: var(--btn-color);
-      box-shadow: 0 0 0 3px color-mix(in srgb, var(--btn-color) 20%, transparent);
-      background: color-mix(in srgb, var(--btn-color) 8%, white);
-    }
   </style>
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
@@ -538,22 +500,21 @@
       <input type="hidden" class="hidden-color-input" id="textColor" name="textColor" required />
     </div>
 
-    <hr class="divider" />
-
-    <hr class="divider" />
-
-    <!-- Voltmeter Color -->
+    <!-- Voltmeter LED Color -->
     <div class="field">
       <label>Voltmeter LED Color <span class="req">*</span></label>
-      <div class="color-button-group" id="voltmeterGroup">
-        <button type="button" class="color-btn" data-color="Red"    onclick="selectVoltmeter(this)" style="--btn-color:#e53935;">Red</button>
-        <button type="button" class="color-btn" data-color="Green"  onclick="selectVoltmeter(this)" style="--btn-color:#43a047;">Green</button>
-        <button type="button" class="color-btn" data-color="Blue"   onclick="selectVoltmeter(this)" style="--btn-color:#1e88e5;">Blue</button>
-        <button type="button" class="color-btn" data-color="White"  onclick="selectVoltmeter(this)" style="--btn-color:#bdbdbd;">White</button>
-        <button type="button" class="color-btn" data-color="Orange" onclick="selectVoltmeter(this)" style="--btn-color:#fb8c00;">Orange</button>
+      <div class="color-picker" id="voltmeterPicker">
+        <div class="color-picker-trigger" onclick="togglePicker('voltmeterPicker')">
+          <span class="trigger-swatch" id="voltmeterSwatch" style="background:transparent"></span>
+          <span class="trigger-label placeholder" id="voltmeterLabel">— Choose a color —</span>
+          <span class="trigger-arrow">▾</span>
+        </div>
+        <div class="color-dropdown" id="voltmeterDropdown"></div>
       </div>
-      <input type="hidden" id="voltmeterColor" name="voltmeterColor" required />
+      <input type="hidden" class="hidden-color-input" id="voltmeterColor" name="voltmeterColor" required />
     </div>
+
+    <hr class="divider" />
 
     <!-- Custom Bottom Text (optional) -->
     <div class="optional-section">
@@ -744,13 +705,23 @@
   // Map picker id → { swatchId, labelId, dropdownId, hiddenId, otherId }
   const PICKERS = {
     shellPicker: { swatch: "shellSwatch", label: "shellLabel", dropdown: "shellDropdown", hidden: "shellColor",  other: "shellColorOther" },
-    textPicker:  { swatch: "textSwatch",  label: "textLabel",  dropdown: "textDropdown",  hidden: "textColor",   other: "textColorOther"  },
+    textPicker:       { swatch: "textSwatch",      label: "textLabel",      dropdown: "textDropdown",      hidden: "textColor",      other: "textColorOther",  colors: null },
+    voltmeterPicker:  { swatch: "voltmeterSwatch", label: "voltmeterLabel", dropdown: "voltmeterDropdown", hidden: "voltmeterColor", other: null,             colors: "VOLTMETER" }
   };
+
+  const VOLTMETER_COLORS = [
+    { name: "Red",    hex: "#e53935" },
+    { name: "Green",  hex: "#43a047" },
+    { name: "Blue",   hex: "#1e88e5" },
+    { name: "White",  hex: "#f0f0f0" },
+    { name: "Orange", hex: "#fb8c00" },
+  ];
 
   // Build dropdown HTML for each picker
   Object.entries(PICKERS).forEach(([pickerId, ids]) => {
     const container = document.getElementById(ids.dropdown);
-    COLORS.forEach(c => {
+    const colorList = ids.colors === "VOLTMETER" ? VOLTMETER_COLORS : COLORS;
+    colorList.forEach(c => {
       const div = document.createElement("div");
       div.className = "color-option";
       div.dataset.value = c.name;
@@ -761,15 +732,17 @@
       div.addEventListener("click", () => selectColor(pickerId, c.name, c.hex));
       container.appendChild(div);
     });
-    // "Other" option
-    const otherDiv = document.createElement("div");
-    otherDiv.className = "color-option";
-    otherDiv.dataset.value = "Other";
-    otherDiv.innerHTML = `
-      <span class="option-swatch" style="background:transparent;border-style:dashed"></span>
-      <span class="option-label">Other…</span>`;
-    otherDiv.addEventListener("click", () => selectColor(pickerId, "Other", "transparent"));
-    container.appendChild(otherDiv);
+    // "Other" option (skip for pickers with other: null)
+    if (ids.other) {
+      const otherDiv = document.createElement("div");
+      otherDiv.className = "color-option";
+      otherDiv.dataset.value = "Other";
+      otherDiv.innerHTML = `
+        <span class="option-swatch" style="background:transparent;border-style:dashed"></span>
+        <span class="option-label">Other…</span>`;
+      otherDiv.addEventListener("click", () => selectColor(pickerId, "Other", "transparent"));
+      container.appendChild(otherDiv);
+    }
   });
 
   function togglePicker(pickerId) {
@@ -925,12 +898,6 @@ function resetForm() {
   document.getElementById('orderForm').style.display = '';
   window.scrollTo(0, 0);
 }
-
-  function selectVoltmeter(btn) {
-    document.querySelectorAll('#voltmeterGroup .color-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    document.getElementById('voltmeterColor').value = btn.dataset.color;
-  }
 
 </script>
 </body>
