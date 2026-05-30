@@ -174,6 +174,40 @@
       margin: 0 auto 20px;
     }
 
+    /* Notify dialog */
+    .notify-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+    .notify-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 32px 28px 24px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+      text-align: center;
+      max-width: 340px;
+      width: 90%;
+    }
+    .notify-box p { color: #333; font-size: 15px; margin-bottom: 22px; line-height: 1.5; }
+    .notify-actions { display: flex; gap: 10px; justify-content: center; }
+    .notify-actions button {
+      padding: 9px 22px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    #notifyYes { background: #4a7c59; color: #fff; }
+    #notifyYes:hover { background: #3a6347; }
+    #notifyNo  { background: #e4ede6; color: #3a6347; }
+    #notifyNo:hover { background: #d3e4d6; }
+
     /* Login gate */
     .login-overlay {
       position: fixed;
@@ -210,6 +244,17 @@
   </style>
 </head>
 <body>
+
+<!-- Notify customer dialog -->
+<div class="notify-overlay" id="notifyOverlay">
+  <div class="notify-box">
+    <p id="notifyMsg"></p>
+    <div class="notify-actions">
+      <button id="notifyYes">Yes, notify them</button>
+      <button id="notifyNo">No, just update</button>
+    </div>
+  </div>
+</div>
 
 <!-- Simple password gate so the dashboard isn't wide open -->
 <div class="login-overlay" id="loginOverlay">
@@ -388,14 +433,65 @@
   }
 
   const STATUS_CYCLE = ["Pending", "In Progress", "Done"];
+
   function cycleStatus(idx) {
-    const order = allOrders[idx];
-    const cur   = STATUS_CYCLE.indexOf(order["Status"]);
-    order["Status"] = STATUS_CYCLE[(cur + 1) % STATUS_CYCLE.length];
+    const order     = allOrders[idx];
+    const cur       = STATUS_CYCLE.indexOf(order["Status"] || "Pending");
+    const newStatus = STATUS_CYCLE[(cur + 1) % STATUS_CYCLE.length];
+    const contact   = order["Contact"] || "";
+    const hasEmail  = contact.indexOf("@") > -1;
+
+    // For "Pending" (no email-worthy transition) just update silently
+    if (newStatus === "Pending" || !hasEmail) {
+      applyStatusUpdate(idx, newStatus, false);
+      return;
+    }
+
+    // Show notify dialog for In Progress / Done
+    showNotifyDialog(idx, newStatus);
+  }
+
+  function showNotifyDialog(idx, newStatus) {
+    const overlay = document.getElementById("notifyOverlay");
+    const msg     = document.getElementById("notifyMsg");
+    msg.textContent = "Status → "" + newStatus + "". Notify the customer by email?";
+    overlay.style.display = "flex";
+
+    document.getElementById("notifyYes").onclick = function() {
+      overlay.style.display = "none";
+      applyStatusUpdate(idx, newStatus, true);
+    };
+    document.getElementById("notifyNo").onclick = function() {
+      overlay.style.display = "none";
+      applyStatusUpdate(idx, newStatus, false);
+    };
+  }
+
+  async function applyStatusUpdate(idx, newStatus, notify) {
+    const order    = allOrders[idx];
+    const rowIndex = order._rowIndex;
+
+    // Optimistically update UI
+    order["Status"] = newStatus;
     renderStats();
     renderOrders();
-    // Note: status changes here are local only (in-memory). To persist them,
-    // update the "Status" column directly in your Google Sheet.
+
+    // Persist to sheet (and optionally email customer)
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "updateStatus",
+          rowIndex: rowIndex,
+          status: newStatus,
+          notify: notify
+        })
+      });
+    } catch(_) {
+      // no-cors means we can't read errors, fail silently
+    }
   }
 
   function esc(str) {
