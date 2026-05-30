@@ -456,7 +456,7 @@
   function showNotifyDialog(idx, newStatus) {
     const overlay = document.getElementById("notifyOverlay");
     const msg     = document.getElementById("notifyMsg");
-    msg.textContent = "Status → "" + newStatus + "". Notify the customer by email?";
+    msg.textContent = "Status → '" + newStatus + "'. Notify the customer by email?";
     overlay.style.display = "flex";
 
     document.getElementById("notifyYes").onclick = function() {
