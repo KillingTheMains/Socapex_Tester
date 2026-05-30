@@ -245,6 +245,13 @@
     }
     .login-box input:focus { border-color: #4a7c59; }
     .login-error { color: #c0392b; font-size: 13px; margin-bottom: 10px; }
+
+    .file-row { border-top: 1px solid #eee; padding: 10px 16px 12px; display: flex; align-items: center; gap: 10px; }
+    .file-attach-btn { font-size: 12px; padding: 5px 12px; background: #f0f0f0; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; color: #444; }
+    .file-attach-btn:hover { background: #e0e0e0; }
+    .file-link { font-size: 13px; color: #4a7c59; text-decoration: none; display: flex; align-items: center; gap: 5px; }
+    .file-link:hover { text-decoration: underline; }
+    .file-input-hidden { display: none; }
   </style>
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
@@ -440,6 +447,18 @@
             <div class="dl">Shipping</div>
             <div class="dv" style="${o['Shipping Address'] === 'Pickup' ? 'color:#888' : 'color:#7ec8a0'}">${esc(o["Shipping Address"])}</div>
           </div>` : ""}
+
+      <div class="file-row">
+        \${o["Print File"] ? \`
+          <a class="file-link" href="\${esc(o['Print File URL'] || '#')}" target="_blank" download>
+            📎 \${esc(o["Print File"])}
+          </a>
+          <button class="file-attach-btn" onclick="attachFile(\${idx})">Replace</button>
+        \` : \`
+          <button class="file-attach-btn" onclick="attachFile(\${idx})">📎 Attach Print File</button>
+        \`}
+        <input type="file" class="file-input-hidden" id="fileInput_\${idx}" accept=".3mf,.stl,.obj" onchange="handleFileUpload(\${idx}, this)">
+      </div>
         </div>
       </div>`;
     }).join("");
@@ -510,6 +529,47 @@
   function esc(str) {
     return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   }
+
+  function attachFile(idx) {
+    document.getElementById("fileInput_" + idx).click();
+  }
+
+  async function handleFileUpload(idx, input) {
+    const file = input.files[0];
+    if (!file) return;
+    const order = allOrders[idx];
+    const btn = document.querySelector(`#fileInput_${idx}`).previousElementSibling || document.querySelector(`[onclick="attachFile(${idx})"]`);
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+      const base64 = e.target.result.split(",")[1];
+      try {
+        const res = await fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "uploadFile",
+            rowIndex: order._rowIndex,
+            fileName: file.name,
+            fileData: base64,
+            mimeType: file.type || "application/octet-stream",
+            customerName: order["Name"] || "Unknown"
+          })
+        });
+        const result = await res.json();
+        if (result.status === "ok") {
+          order["Print File"] = file.name;
+          order["Print File URL"] = result.fileUrl;
+          renderOrders();
+        } else {
+          alert("Upload failed: " + (result.message || "unknown error"));
+        }
+      } catch(err) {
+        alert("Upload error: " + err.message);
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
 </script>
 </body>
 </html>
