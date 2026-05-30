@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sokopeks — Order Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f0f4f1;
+      min-height: 100vh;
+      padding: 32px 16px 60px;
+    }
+
+    header {
+      max-width: 900px;
+      margin: 0 auto 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    header h1 {
+      font-size: 22px;
+      color: #2a4a30;
+      font-weight: 700;
+    }
+    header p { font-size: 13px; color: #888; }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+    .btn-primary { background: #4a7c59; color: #fff; }
+    .btn-primary:hover { background: #3a6347; }
+    .btn-ghost { background: #e4ede6; color: #3a6347; }
+    .btn-ghost:hover { background: #d3e4d6; }
+
+    select.filter-select {
+      padding: 7px 12px;
+      border: 1.5px solid #c8d9cc;
+      border-radius: 6px;
+      font-size: 14px;
+      background: #fff;
+      color: #333;
+      cursor: pointer;
+    }
+
+    .stats {
+      max-width: 900px;
+      margin: 0 auto 22px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 14px 22px;
+      flex: 1;
+      min-width: 120px;
+      text-align: center;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    }
+    .stat-card .num { font-size: 28px; font-weight: 700; color: #2a4a30; }
+    .stat-card .lbl { font-size: 12px; color: #999; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.8px; }
+
+    .container { max-width: 900px; margin: 0 auto; }
+
+    .order-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.07);
+      margin-bottom: 14px;
+      overflow: hidden;
+      transition: box-shadow 0.15s;
+    }
+    .order-card:hover { box-shadow: 0 3px 16px rgba(0,0,0,0.11); }
+
+    .order-header {
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .order-header .name {
+      font-size: 17px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    .order-header .meta {
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+    }
+    .status-Pending    { background: #fff3cd; color: #856404; }
+    .status-InProgress { background: #cff4fc; color: #0a6880; }
+    .status-Done       { background: #d1e7dd; color: #0f5132; }
+
+    .order-body {
+      padding: 16px 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px 20px;
+    }
+
+    .detail-item .dl { font-size: 11px; color: #bbb; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 3px; }
+    .detail-item .dv { font-size: 15px; color: #222; }
+    .detail-item .dv.none { color: #ccc; font-style: italic; font-size: 13px; }
+
+    .color-swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1px solid rgba(0,0,0,0.15);
+      vertical-align: middle;
+      margin-right: 5px;
+      position: relative;
+      top: -1px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #aaa;
+    }
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state p { font-size: 16px; }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #888;
+      font-size: 15px;
+    }
+
+    .error-banner {
+      background: #fdf0f0;
+      border: 1px solid #e07070;
+      border-radius: 8px;
+      padding: 14px 18px;
+      color: #8b2020;
+      font-size: 14px;
+      max-width: 900px;
+      margin: 0 auto 20px;
+    }
+
+    /* Login gate */
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      background: #f0f4f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .login-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 40px 36px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+      text-align: center;
+      max-width: 340px;
+      width: 100%;
+    }
+    .login-box h2 { color: #2a4a30; margin-bottom: 8px; font-size: 20px; }
+    .login-box p  { color: #888; font-size: 13px; margin-bottom: 22px; }
+    .login-box input {
+      width: 100%;
+      padding: 11px 14px;
+      font-size: 16px;
+      border: 1.5px solid #c8d9cc;
+      border-radius: 7px;
+      margin-bottom: 14px;
+      outline: none;
+      font-family: inherit;
+    }
+    .login-box input:focus { border-color: #4a7c59; }
+    .login-error { color: #c0392b; font-size: 13px; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+<!-- Simple password gate so the dashboard isn't wide open -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <h2>🔒 Order Dashboard</h2>
+    <p>Enter your dashboard password to continue.</p>
+    <input type="password" id="passwordInput" placeholder="Password" />
+    <div class="login-error" id="loginError" style="display:none">Wrong password. Try again.</div>
+    <button class="btn btn-primary" style="width:100%;padding:11px" onclick="checkPassword()">Sign In</button>
+  </div>
+</div>
+
+<header>
+  <div>
+    <h1>📦 Sokopeks Orders</h1>
+    <p id="lastUpdated">Loading…</p>
+  </div>
+  <div class="controls">
+    <select class="filter-select" id="statusFilter" onchange="renderOrders()">
+      <option value="all">All orders</option>
+      <option value="Pending">Pending</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Done">Done</option>
+    </select>
+    <button class="btn btn-ghost" onclick="loadOrders()">↻ Refresh</button>
+  </div>
+</header>
+
+<div class="stats" id="statsBar"></div>
+
+<div class="container">
+  <div class="loading" id="loadingEl">Loading orders…</div>
+  <div class="error-banner" id="errorBanner" style="display:none"></div>
+  <div id="orderList"></div>
+</div>
+
+<script>
+  // ─── CONFIGURATION ────────────────────────────────────────────────────
+  // Replace with your Google Apps Script Web App URL (same one as in order-form.html)
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx50yqUoPy-CyuyGwG7l9oXbC5ig2Qd9sC5mssCT-Y4eQRFAcWS5y-ksR9MN5cdrkE2/exec";
+
+  // Simple dashboard password — change this to whatever you want
+  const DASHBOARD_PASSWORD = "sokopeks2024";
+  // ──────────────────────────────────────────────────────────────────────
+
+  let allOrders = [];
+
+  // Password gate
+  function checkPassword() {
+    const val = document.getElementById("passwordInput").value;
+    if (val === DASHBOARD_PASSWORD) {
+      document.getElementById("loginOverlay").style.display = "none";
+      loadOrders();
+    } else {
+      document.getElementById("loginError").style.display = "block";
+    }
+  }
+  document.getElementById("passwordInput").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") checkPassword();
+  });
+
+  async function loadOrders() {
+    document.getElementById("loadingEl").style.display = "block";
+    document.getElementById("errorBanner").style.display = "none";
+    document.getElementById("orderList").innerHTML = "";
+    document.getElementById("statsBar").innerHTML = "";
+
+    try {
+      const res  = await fetch(APPS_SCRIPT_URL + "?v=" + Date.now());
+      const data = await res.json();
+      allOrders  = data.orders || [];
+
+      document.getElementById("lastUpdated").textContent =
+        "Last refreshed: " + new Date().toLocaleTimeString();
+      document.getElementById("loadingEl").style.display = "none";
+      renderStats();
+      renderOrders();
+
+    } catch (err) {
+      document.getElementById("loadingEl").style.display = "none";
+      const banner = document.getElementById("errorBanner");
+      banner.style.display = "block";
+      banner.textContent = "Could not load orders. Make sure the Apps Script URL is set correctly. (" + err.message + ")";
+    }
+  }
+
+  function renderStats() {
+    const total   = allOrders.length;
+    const pending = allOrders.filter(o => o["Status"] === "Pending").length;
+    const done    = allOrders.filter(o => o["Status"] === "Done").length;
+    const inProg  = allOrders.filter(o => o["Status"] === "In Progress").length;
+
+    document.getElementById("statsBar").innerHTML = `
+      <div class="stat-card"><div class="num">${total}</div><div class="lbl">Total Orders</div></div>
+      <div class="stat-card"><div class="num" style="color:#856404">${pending}</div><div class="lbl">Pending</div></div>
+      <div class="stat-card"><div class="num" style="color:#0a6880">${inProg}</div><div class="lbl">In Progress</div></div>
+      <div class="stat-card"><div class="num" style="color:#0f5132">${done}</div><div class="lbl">Done</div></div>
+    `;
+  }
+
+  // Map color names to approximate CSS colors for swatches
+  const COLOR_MAP = {
+    "Red":"#ee1c24","Orange":"#ff7f00","Yellow":"#fce03a","Yellow-Green":"#9ccc3d",
+    "Green":"#1ab24a","Blue-Green":"#009b77","Blue":"#0066b2","Violet (Purple)":"#8b4eb6",
+    "Red-Violet":"#c2185b","Red-Orange":"#f5622e","Yellow-Orange":"#f8a820",
+    "Carnation Pink":"#ff9999","Violet-Red":"#f03171","Blue-Violet":"#4444cc",
+    "White":"#f8f8f8","Black":"#222222","Brown":"#8b4513","Apricot":"#ffd5a8",
+    "Burnt Sienna":"#e97451","Cadet Blue":"#5f9ea0","Cerulean":"#0088c8",
+    "Cornflower":"#9acaf7","Dandelion":"#fddb6d","Forest Green":"#228b22",
+    "Goldenrod":"#daa520","Gray":"#808080","Lavender":"#c4aadc","Mahogany":"#cd4a4a",
+    "Maize":"#f5e07a","Melon":"#febaad","Plum":"#8e4585","Raw Umber":"#714b23",
+    "Salmon":"#ff9a8b","Sea Green":"#2e8b57","Silver":"#c0c0c0","Sky Blue":"#76d7ea",
+    "Spring Green":"#6ede7f","Tan":"#d2b48c","Thistle":"#d8b4e2",
+    "Turquoise Blue":"#40e0d0","Wisteria":"#c9a0dc"
+  };
+
+  function swatch(colorName) {
+    const hex = COLOR_MAP[colorName] || "#eee";
+    return `<span class="color-swatch" style="background:${hex}" title="${colorName}"></span>`;
+  }
+
+  function renderOrders() {
+    const filter  = document.getElementById("statusFilter").value;
+    const orders  = filter === "all" ? allOrders :
+                    allOrders.filter(o => o["Status"] === filter);
+    const listEl  = document.getElementById("orderList");
+
+    if (orders.length === 0) {
+      listEl.innerHTML = `
+        <div class="empty-state">
+          <div class="icon">📭</div>
+          <p>${filter === "all" ? "No orders yet." : "No " + filter.toLowerCase() + " orders."}</p>
+        </div>`;
+      return;
+    }
+
+    listEl.innerHTML = orders.map((o, idx) => {
+      const statusClass = "status-" + (o["Status"] || "Pending").replace(" ","");
+      const hasText = o["Top Line"] && o["Top Line"] !== "(none)" || o["Bottom Line"] && o["Bottom Line"] !== "(none)";
+      return `
+      <div class="order-card">
+        <div class="order-header">
+          <div>
+            <div class="name">${esc(o["Name"] || "—")}</div>
+            <div class="meta">${esc(o["Contact"] || "")}  ·  ${esc(o["Submitted At"] || "")}</div>
+          </div>
+          <button class="status-badge ${statusClass}" onclick="cycleStatus(${idx})" title="Click to change status">
+            ${esc(o["Status"] || "Pending")}
+          </button>
+        </div>
+        <div class="order-body">
+          <div class="detail-item">
+            <div class="dl">Shell Color</div>
+            <div class="dv">${swatch(o["Shell Color"])}${esc(o["Shell Color"] || "—")}</div>
+          </div>
+          <div class="detail-item">
+            <div class="dl">Text Color</div>
+            <div class="dv">${swatch(o["Text Color"])}${esc(o["Text Color"] || "—")}</div>
+          </div>
+          <div class="detail-item">
+            <div class="dl">Bottom — Top Line</div>
+            <div class="dv ${!hasText || o['Top Line']==='(none)' ? 'none' : ''}">${esc(o["Top Line"] && o["Top Line"] !== "(none)" ? o["Top Line"] : "none")}</div>
+          </div>
+          <div class="detail-item">
+            <div class="dl">Bottom — Bottom Line</div>
+            <div class="dv ${!hasText || o['Bottom Line']==='(none)' ? 'none' : ''}">${esc(o["Bottom Line"] && o["Bottom Line"] !== "(none)" ? o["Bottom Line"] : "none")}</div>
+          </div>
+          ${o["Notes"] ? `
+          <div class="detail-item" style="grid-column: 1/-1">
+            <div class="dl">Notes</div>
+            <div class="dv">${esc(o["Notes"])}</div>
+          </div>` : ""}
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  const STATUS_CYCLE = ["Pending", "In Progress", "Done"];
+  function cycleStatus(idx) {
+    const order = allOrders[idx];
+    const cur   = STATUS_CYCLE.indexOf(order["Status"]);
+    order["Status"] = STATUS_CYCLE[(cur + 1) % STATUS_CYCLE.length];
+    renderStats();
+    renderOrders();
+    // Note: status changes here are local only (in-memory). To persist them,
+    // update the "Status" column directly in your Google Sheet.
+  }
+
+  function esc(str) {
+    return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+</script>
+</body>
+</html>
