@@ -277,6 +277,64 @@
       display: block;
     }
 
+
+    .shipping-section {
+      margin-bottom: 20px;
+    }
+    .shipping-checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+      cursor: pointer;
+    }
+    .shipping-checkbox-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #4a7c59;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .shipping-checkbox-row span {
+      font-size: 15px;
+      color: #ccc;
+    }
+    .shipping-sub-form {
+      display: none;
+      background: #222;
+      border: 1.5px dashed #2e2e2e;
+      border-radius: 9px;
+      padding: 20px 20px 16px;
+      margin-top: 14px;
+    }
+    .shipping-sub-form.visible {
+      display: block;
+    }
+    .shipping-sub-form .section-label {
+      margin-bottom: 14px;
+    }
+    .shipping-disclaimer {
+      font-size: 12px;
+      color: #666;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+    .shipping-disclaimer a { color: inherit; }
+    .shipping-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .shipping-row-3 {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.2fr;
+      gap: 14px;
+    }
+    @media (max-width: 480px) {
+      .shipping-row-2,
+      .shipping-row-3 { grid-template-columns: 1fr; }
+    }
+
     /* Hidden real inputs for form submission */
     .hidden-color-input { display: none; }
 
@@ -443,6 +501,67 @@
       <input type="text" id="notes" name="notes" placeholder="" />
     </div>
 
+
+    <div class="shipping-section">
+      <label class="shipping-checkbox-row">
+        <input type="checkbox" id="shippingToggle" onchange="toggleShipping()" />
+        <span>I'd like this order shipped to me</span>
+      </label>
+
+      <div class="shipping-sub-form" id="shippingSubForm">
+        <p class="section-label">Shipping Address</p>
+
+        <div class="form-group">
+          <label for="shipName">Full Name <span class="req">*</span></label>
+          <input type="text" id="shipName" name="shipName" placeholder="" />
+        </div>
+
+        <div class="form-group">
+          <label for="shipStreet">Street Address <span class="req">*</span></label>
+          <input type="text" id="shipStreet" name="shipStreet" placeholder="" />
+        </div>
+
+        <div class="form-group">
+          <label for="shipApt">Apt / Suite / Unit <span class="opt">optional</span></label>
+          <input type="text" id="shipApt" name="shipApt" placeholder="" />
+        </div>
+
+        <div class="shipping-row-3">
+          <div class="form-group">
+            <label for="shipCity">City <span class="req">*</span></label>
+            <input type="text" id="shipCity" name="shipCity" placeholder="" />
+          </div>
+          <div class="form-group">
+            <label for="shipState">State <span class="req">*</span></label>
+            <select id="shipState" name="shipState" style="width:100%;padding:10px 12px;background:#1a1a1a;color:#ddd;border:1.5px solid #2e2e2e;border-radius:6px;font-size:14px;appearance:none;">
+              <option value="">—</option>
+              <option>AL</option><option>AK</option><option>AZ</option><option>AR</option>
+              <option>CA</option><option>CO</option><option>CT</option><option>DE</option>
+              <option>FL</option><option>GA</option><option>HI</option><option>ID</option>
+              <option>IL</option><option>IN</option><option>IA</option><option>KS</option>
+              <option>KY</option><option>LA</option><option>ME</option><option>MD</option>
+              <option>MA</option><option>MI</option><option>MN</option><option>MS</option>
+              <option>MO</option><option>MT</option><option>NE</option><option>NV</option>
+              <option>NH</option><option>NJ</option><option>NM</option><option>NY</option>
+              <option>NC</option><option>ND</option><option>OH</option><option>OK</option>
+              <option>OR</option><option>PA</option><option>RI</option><option>SC</option>
+              <option>SD</option><option>TN</option><option>TX</option><option>UT</option>
+              <option>VT</option><option>VA</option><option>WA</option><option>WV</option>
+              <option>WI</option><option>WY</option><option>DC</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="shipZip">ZIP Code <span class="req">*</span></label>
+            <input type="text" id="shipZip" name="shipZip" placeholder="" maxlength="10" />
+          </div>
+        </div>
+
+        <p class="shipping-disclaimer">
+          &#x1F4E6; Shipping is currently available to <strong>US addresses only</strong>.<br>
+          After your order is received, you'll be contacted to confirm shipping costs, arrange payment, and provide tracking information before your order ships.
+        </p>
+      </div>
+    </div>
     <button type="submit" class="submit-btn" id="submitBtn">Submit Order</button>
 
     <div class="error-msg" id="errorMsg">
@@ -620,7 +739,15 @@
       topLine:     document.getElementById("topLine").value.trim(),
       bottomLine:  document.getElementById("bottomLine").value.trim(),
       notes:       document.getElementById("notes").value.trim(),
-      submittedAt: new Date().toLocaleString("en-US", { timeZoneName: "short" })
+      submittedAt: new Date().toLocaleString("en-US", { timeZoneName: "short" }),
+      shipping:    document.getElementById("shippingToggle").checked ? {
+        name:   document.getElementById("shipName").value.trim(),
+        street: document.getElementById("shipStreet").value.trim(),
+        apt:    document.getElementById("shipApt").value.trim(),
+        city:   document.getElementById("shipCity").value.trim(),
+        state:  document.getElementById("shipState").value,
+        zip:    document.getElementById("shipZip").value.trim()
+      } : "Pickup"
     };
 
     let emailOk = false, sheetOk = false;
