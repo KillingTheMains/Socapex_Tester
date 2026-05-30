@@ -121,9 +121,10 @@
       border: none;
       font-family: inherit;
     }
-    .status-Pending    { background: #fff3cd; color: #856404; }
-    .status-InProgress { background: #cff4fc; color: #0a6880; }
-    .status-Done       { background: #d1e7dd; color: #0f5132; }
+    .status-Received  { background: #fff3cd; color: #856404; }
+    .status-InDesign  { background: #e0d7f5; color: #5a3e99; }
+    .status-Printing  { background: #cff4fc; color: #0a6880; }
+    .status-Complete  { background: #d1e7dd; color: #0f5132; }
 
     .order-body {
       padding: 16px 20px;
@@ -275,9 +276,10 @@
   <div class="controls">
     <select class="filter-select" id="statusFilter" onchange="renderOrders()">
       <option value="all">All orders</option>
-      <option value="Pending">Pending</option>
-      <option value="In Progress">In Progress</option>
-      <option value="Done">Done</option>
+      <option value="Received">Received</option>
+      <option value="In Design">In Design</option>
+      <option value="Printing">Printing</option>
+      <option value="Complete">Complete</option>
     </select>
     <button class="btn btn-ghost" onclick="loadOrders()">↻ Refresh</button>
   </div>
@@ -343,15 +345,17 @@
 
   function renderStats() {
     const total   = allOrders.length;
-    const pending = allOrders.filter(o => o["Status"] === "Pending").length;
-    const done    = allOrders.filter(o => o["Status"] === "Done").length;
-    const inProg  = allOrders.filter(o => o["Status"] === "In Progress").length;
+    const received  = allOrders.filter(o => o["Status"] === "Received").length;
+    const inDesign  = allOrders.filter(o => o["Status"] === "In Design").length;
+    const printing  = allOrders.filter(o => o["Status"] === "Printing").length;
+    const complete  = allOrders.filter(o => o["Status"] === "Complete").length;
 
     document.getElementById("statsBar").innerHTML = `
-      <div class="stat-card"><div class="num">${total}</div><div class="lbl">Total Orders</div></div>
-      <div class="stat-card"><div class="num" style="color:#856404">${pending}</div><div class="lbl">Pending</div></div>
-      <div class="stat-card"><div class="num" style="color:#0a6880">${inProg}</div><div class="lbl">In Progress</div></div>
-      <div class="stat-card"><div class="num" style="color:#0f5132">${done}</div><div class="lbl">Done</div></div>
+      <div class="stat-card"><div class="num">${total}</div><div class="lbl">Total</div></div>
+      <div class="stat-card"><div class="num" style="color:#856404">${received}</div><div class="lbl">Received</div></div>
+      <div class="stat-card"><div class="num" style="color:#5a3e99">${inDesign}</div><div class="lbl">In Design</div></div>
+      <div class="stat-card"><div class="num" style="color:#0a6880">${printing}</div><div class="lbl">Printing</div></div>
+      <div class="stat-card"><div class="num" style="color:#0f5132">${complete}</div><div class="lbl">Complete</div></div>
     `;
   }
 
@@ -392,7 +396,7 @@
     }
 
     listEl.innerHTML = orders.map((o, idx) => {
-      const statusClass = "status-" + (o["Status"] || "Pending").replace(" ","");
+      const statusClass = "status-" + (o["Status"] || "Received").replace(" ","");
       const hasText = o["Top Line"] && o["Top Line"] !== "(none)" || o["Bottom Line"] && o["Bottom Line"] !== "(none)";
       return `
       <div class="order-card">
@@ -402,7 +406,7 @@
             <div class="meta">${esc(o["Contact"] || "")}  ·  ${esc(o["Submitted At"] || "")}</div>
           </div>
           <button class="status-badge ${statusClass}" onclick="cycleStatus(${idx})" title="Click to change status">
-            ${esc(o["Status"] || "Pending")}
+            ${esc(o["Status"] || "Received")}
           </button>
         </div>
         <div class="order-body">
@@ -432,22 +436,22 @@
     }).join("");
   }
 
-  const STATUS_CYCLE = ["Pending", "In Progress", "Done"];
+  const STATUS_CYCLE = ["Received", "In Design", "Printing", "Complete"];
 
   function cycleStatus(idx) {
     const order     = allOrders[idx];
-    const cur       = STATUS_CYCLE.indexOf(order["Status"] || "Pending");
+    const cur       = STATUS_CYCLE.indexOf(order["Status"] || "Received");
     const newStatus = STATUS_CYCLE[(cur + 1) % STATUS_CYCLE.length];
     const contact   = order["Contact"] || "";
     const hasEmail  = contact.indexOf("@") > -1;
 
-    // For "Pending" (no email-worthy transition) just update silently
-    if (newStatus === "Pending" || !hasEmail) {
+    // Cycling back to Received — just update silently
+    if (newStatus === "Received" || !hasEmail) {
       applyStatusUpdate(idx, newStatus, false);
       return;
     }
 
-    // Show notify dialog for In Progress / Done
+    // Show notify dialog for all forward transitions
     showNotifyDialog(idx, newStatus);
   }
 
