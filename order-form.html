@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sokopeks Tester Box Order</title>
+  <title>Socopex Tester Box Order</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -181,7 +181,7 @@
 <body>
 <div class="card">
   <div class="logo">
-    <h1>Sokopeks Tester Box</h1>
+    <h1>Socopex Tester Box</h1>
     <p>Custom Order Form</p>
   </div>
   <hr class="divider" />
@@ -383,7 +383,7 @@
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({
           ...formData,
-          _subject: "New Sokopeks Box Order — " + formData.name
+          _subject: "New Socopex Box Order — " + formData.name
         })
       });
       emailOk = res.ok;
