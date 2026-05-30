@@ -9,7 +9,7 @@
 
     body {
       font-family: Georgia, 'Times New Roman', serif;
-      background: #f5f0eb;
+      background: #111;
       min-height: 100vh;
       display: flex;
       align-items: flex-start;
@@ -18,9 +18,9 @@
     }
 
     .card {
-      background: #fff;
+      background: #1c1c1c;
       border-radius: 12px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      box-shadow: 0 4px 32px rgba(0,0,0,0.5);
       max-width: 560px;
       width: 100%;
       padding: 40px 36px 44px;
@@ -32,18 +32,18 @@
     }
     .logo h1 {
       font-size: 26px;
-      color: #2c2c2c;
+      color: #f0f0f0;
       letter-spacing: 0.5px;
     }
     .logo p {
-      color: #888;
+      color: #666;
       font-size: 14px;
       margin-top: 4px;
     }
 
     .divider {
       border: none;
-      border-top: 1px solid #e8e2db;
+      border-top: 1px solid #2e2e2e;
       margin: 0 0 28px;
     }
 
@@ -52,7 +52,7 @@
       font-weight: bold;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: #999;
+      color: #666;
       margin-bottom: 16px;
     }
 
@@ -63,57 +63,153 @@
     label {
       display: block;
       font-size: 16px;
-      color: #333;
+      color: #ccc;
       margin-bottom: 7px;
       font-weight: normal;
     }
 
     label .req {
-      color: #c0392b;
+      color: #e05555;
       margin-left: 3px;
     }
 
     label .opt {
       font-size: 13px;
-      color: #aaa;
+      color: #555;
       margin-left: 5px;
       font-style: italic;
     }
 
-    select, input[type="text"] {
+    input[type="text"] {
       width: 100%;
       padding: 12px 14px;
       font-size: 16px;
       font-family: Georgia, serif;
-      border: 1.5px solid #d0c8be;
+      border: 1.5px solid #333;
       border-radius: 7px;
-      background: #fdfaf7;
-      color: #222;
-      appearance: none;
-      -webkit-appearance: none;
+      background: #252525;
+      color: #eee;
       outline: none;
       transition: border-color 0.2s;
     }
-    select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 14px center;
-      padding-right: 40px;
-    }
-    select:focus, input[type="text"]:focus {
-      border-color: #7a9e7e;
+    input[type="text"]:focus {
+      border-color: #5a8c68;
     }
 
     .hint {
       font-size: 13px;
-      color: #aaa;
+      color: #555;
       margin-top: 5px;
       font-style: italic;
     }
 
+    /* ── Custom color dropdown ── */
+    .color-picker {
+      position: relative;
+      user-select: none;
+    }
+
+    .color-picker-trigger {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: #252525;
+      border: 1.5px solid #333;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .color-picker-trigger:hover,
+    .color-picker.open .color-picker-trigger {
+      border-color: #5a8c68;
+    }
+
+    .trigger-swatch {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.15);
+      flex-shrink: 0;
+    }
+    .trigger-label {
+      flex: 1;
+      font-size: 16px;
+      font-family: Georgia, serif;
+      color: #eee;
+    }
+    .trigger-label.placeholder {
+      color: #555;
+    }
+    .trigger-arrow {
+      color: #666;
+      font-size: 12px;
+      transition: transform 0.2s;
+    }
+    .color-picker.open .trigger-arrow {
+      transform: rotate(180deg);
+    }
+
+    .color-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: #252525;
+      border: 1.5px solid #3a3a3a;
+      border-radius: 7px;
+      overflow: hidden;
+      z-index: 50;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    .color-picker.open .color-dropdown {
+      display: block;
+    }
+
+    .color-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      border-bottom: 1px solid #2a2a2a;
+      transition: background 0.1s;
+    }
+    .color-option:last-child { border-bottom: none; }
+    .color-option:hover { background: #2f2f2f; }
+    .color-option.selected { background: #2a3a2d; }
+
+    .option-swatch {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.15);
+      flex-shrink: 0;
+    }
+    .option-label {
+      font-size: 15px;
+      font-family: Georgia, serif;
+      color: #ddd;
+    }
+
+    /* Other text input that appears below the picker */
+    .other-input {
+      display: none;
+      margin-top: 8px;
+    }
+    .other-input.visible {
+      display: block;
+    }
+
+    /* Hidden real inputs for form submission */
+    .hidden-color-input { display: none; }
+
     .optional-section {
-      background: #fdf8f3;
-      border: 1.5px dashed #d8cfc4;
+      background: #222;
+      border: 1.5px dashed #2e2e2e;
       border-radius: 9px;
       padding: 20px 20px 16px;
       margin-bottom: 20px;
@@ -124,12 +220,12 @@
 
     .char-count {
       font-size: 12px;
-      color: #bbb;
+      color: #555;
       text-align: right;
       margin-top: 3px;
     }
-    .char-count.warn { color: #e67e22; }
-    .char-count.over { color: #c0392b; font-weight: bold; }
+    .char-count.warn { color: #c87a30; }
+    .char-count.over { color: #e05555; font-weight: bold; }
 
     .submit-btn {
       width: 100%;
@@ -147,15 +243,15 @@
     }
     .submit-btn:hover { background: #3a6347; }
     .submit-btn:active { transform: scale(0.98); }
-    .submit-btn:disabled { background: #aaa; cursor: not-allowed; }
+    .submit-btn:disabled { background: #444; cursor: not-allowed; }
 
     .success-msg {
       display: none;
-      background: #eaf5ec;
-      border: 1.5px solid #7ab87e;
+      background: #1e3024;
+      border: 1.5px solid #3a6347;
       border-radius: 8px;
       padding: 18px 20px;
-      color: #2d6e35;
+      color: #7aba88;
       font-size: 16px;
       text-align: center;
       margin-top: 20px;
@@ -164,11 +260,11 @@
 
     .error-msg {
       display: none;
-      background: #fdf0f0;
-      border: 1.5px solid #e07070;
+      background: #2a1a1a;
+      border: 1.5px solid #7a3030;
       border-radius: 8px;
       padding: 14px 18px;
-      color: #8b2020;
+      color: #cc7070;
       font-size: 14px;
       margin-top: 14px;
     }
@@ -205,53 +301,39 @@
 
     <!-- Shell Color -->
     <div class="field">
-      <label for="shellColor">Shell Color <span class="req">*</span></label>
-      <select id="shellColor" name="shellColor" required onchange="toggleOther('shellColor','shellColorOther')">
-        <option value="" disabled selected>— Choose a color —</option>
-        <option>Red</option>
-        <option>Orange</option>
-        <option>Yellow</option>
-        <option>Green</option>
-        <option>Blue</option>
-        <option>Purple</option>
-        <option>Pink</option>
-        <option>White</option>
-        <option>Black</option>
-        <option>Gray</option>
-        <option>Brown</option>
-        <option>Tan</option>
-        <option value="Other">Other…</option>
-      </select>
-      <input type="text" id="shellColorOther" name="shellColorOther" placeholder="" style="display:none;margin-top:8px;" />
+      <label>Shell Color <span class="req">*</span></label>
+      <div class="color-picker" id="shellPicker">
+        <div class="color-picker-trigger" onclick="togglePicker('shellPicker')">
+          <span class="trigger-swatch" id="shellSwatch" style="background:transparent"></span>
+          <span class="trigger-label placeholder" id="shellLabel">— Choose a color —</span>
+          <span class="trigger-arrow">▾</span>
+        </div>
+        <div class="color-dropdown" id="shellDropdown"></div>
+      </div>
+      <input type="text" class="other-input" id="shellColorOther" placeholder="" />
+      <input type="hidden" class="hidden-color-input" id="shellColor" name="shellColor" required />
     </div>
 
     <!-- Text Color -->
     <div class="field">
-      <label for="textColor">Text / Lettering Color <span class="req">*</span></label>
-      <select id="textColor" name="textColor" required onchange="toggleOther('textColor','textColorOther')">
-        <option value="" disabled selected>— Choose a color —</option>
-        <option>Red</option>
-        <option>Orange</option>
-        <option>Yellow</option>
-        <option>Green</option>
-        <option>Blue</option>
-        <option>Purple</option>
-        <option>Pink</option>
-        <option>White</option>
-        <option>Black</option>
-        <option>Gray</option>
-        <option>Brown</option>
-        <option>Tan</option>
-        <option value="Other">Other…</option>
-      </select>
-      <input type="text" id="textColorOther" name="textColorOther" placeholder="" style="display:none;margin-top:8px;" />
+      <label>Text / Lettering Color <span class="req">*</span></label>
+      <div class="color-picker" id="textPicker">
+        <div class="color-picker-trigger" onclick="togglePicker('textPicker')">
+          <span class="trigger-swatch" id="textSwatch" style="background:transparent"></span>
+          <span class="trigger-label placeholder" id="textLabel">— Choose a color —</span>
+          <span class="trigger-arrow">▾</span>
+        </div>
+        <div class="color-dropdown" id="textDropdown"></div>
+      </div>
+      <input type="text" class="other-input" id="textColorOther" placeholder="" />
+      <input type="hidden" class="hidden-color-input" id="textColor" name="textColor" required />
     </div>
 
     <hr class="divider" />
 
     <!-- Custom Bottom Text (optional) -->
     <div class="optional-section">
-      <p class="section-label">Custom Text on Bottom <span style="font-weight:normal;text-transform:none;letter-spacing:0;font-size:12px;color:#bbb;">(optional — leave blank for no custom text)</span></p>
+      <p class="section-label">Custom Text on Bottom <span style="font-weight:normal;text-transform:none;letter-spacing:0;font-size:12px;color:#555;">(optional — leave blank for no custom text)</span></p>
 
       <div class="field" style="margin-bottom:14px;">
         <label for="topLine">Top Line <span class="opt">optional</span></label>
@@ -287,84 +369,157 @@
 
 <script>
   // ─── CONFIGURATION ────────────────────────────────────────────────────────
-  // 1. Replace with your Formspree endpoint after creating a free account at formspree.io
-  const FORMSPREE_URL = "https://formspree.io/f/mojbzqqo";
-
-  // 2. Replace with your Google Apps Script Web App URL after deploying (see setup guide)
+  const FORMSPREE_URL   = "https://formspree.io/f/mojbzqqo";
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx50yqUoPy-CyuyGwG7l9oXbC5ig2Qd9sC5mssCT-Y4eQRFAcWS5y-ksR9MN5cdrkE2/exec";
   // ──────────────────────────────────────────────────────────────────────────
 
-  function toggleOther(selectId, inputId) {
-    const sel = document.getElementById(selectId);
-    const inp = document.getElementById(inputId);
-    if (sel.value === "Other") {
-      inp.style.display = "block";
-      inp.required = true;
-    } else {
-      inp.style.display = "none";
-      inp.required = false;
-      inp.value = "";
-    }
+  const COLORS = [
+    { name: "Red",    hex: "#ee1c24" },
+    { name: "Orange", hex: "#ff7f00" },
+    { name: "Yellow", hex: "#fce03a" },
+    { name: "Green",  hex: "#1ab24a" },
+    { name: "Blue",   hex: "#0066b2" },
+    { name: "Purple", hex: "#8b4eb6" },
+    { name: "Pink",   hex: "#ff9999" },
+    { name: "White",  hex: "#f0f0f0" },
+    { name: "Black",  hex: "#2a2a2a" },
+    { name: "Gray",   hex: "#808080" },
+    { name: "Brown",  hex: "#8b4513" },
+    { name: "Tan",    hex: "#d2b48c" },
+  ];
+
+  // Map picker id → { swatchId, labelId, dropdownId, hiddenId, otherId }
+  const PICKERS = {
+    shellPicker: { swatch: "shellSwatch", label: "shellLabel", dropdown: "shellDropdown", hidden: "shellColor",  other: "shellColorOther" },
+    textPicker:  { swatch: "textSwatch",  label: "textLabel",  dropdown: "textDropdown",  hidden: "textColor",   other: "textColorOther"  },
+  };
+
+  // Build dropdown HTML for each picker
+  Object.entries(PICKERS).forEach(([pickerId, ids]) => {
+    const container = document.getElementById(ids.dropdown);
+    COLORS.forEach(c => {
+      const div = document.createElement("div");
+      div.className = "color-option";
+      div.dataset.value = c.name;
+      div.dataset.hex   = c.hex;
+      div.innerHTML = `
+        <span class="option-swatch" style="background:${c.hex}"></span>
+        <span class="option-label">${c.name}</span>`;
+      div.addEventListener("click", () => selectColor(pickerId, c.name, c.hex));
+      container.appendChild(div);
+    });
+    // "Other" option
+    const otherDiv = document.createElement("div");
+    otherDiv.className = "color-option";
+    otherDiv.dataset.value = "Other";
+    otherDiv.innerHTML = `
+      <span class="option-swatch" style="background:transparent;border-style:dashed"></span>
+      <span class="option-label">Other…</span>`;
+    otherDiv.addEventListener("click", () => selectColor(pickerId, "Other", "transparent"));
+    container.appendChild(otherDiv);
+  });
+
+  function togglePicker(pickerId) {
+    const picker = document.getElementById(pickerId);
+    const isOpen = picker.classList.contains("open");
+    // Close all pickers first
+    document.querySelectorAll(".color-picker.open").forEach(p => p.classList.remove("open"));
+    if (!isOpen) picker.classList.add("open");
   }
 
-  function resolveColor(selectId, otherId) {
-    const sel = document.getElementById(selectId).value;
-    return sel === "Other" ? document.getElementById(otherId).value.trim() : sel;
+  function selectColor(pickerId, name, hex) {
+    const ids    = PICKERS[pickerId];
+    const picker = document.getElementById(pickerId);
+
+    // Update trigger display
+    document.getElementById(ids.swatch).style.background = hex;
+    const labelEl = document.getElementById(ids.label);
+    labelEl.textContent = name === "Other" ? "Other…" : name;
+    labelEl.classList.remove("placeholder");
+
+    // Mark selected option
+    picker.querySelectorAll(".color-option").forEach(opt => {
+      opt.classList.toggle("selected", opt.dataset.value === name);
+    });
+
+    // Show/hide "other" text input
+    const otherInput = document.getElementById(ids.other);
+    if (name === "Other") {
+      otherInput.classList.add("visible");
+      otherInput.focus();
+      document.getElementById(ids.hidden).value = "";
+    } else {
+      otherInput.classList.remove("visible");
+      otherInput.value = "";
+      document.getElementById(ids.hidden).value = name;
+    }
+
+    picker.classList.remove("open");
   }
+
+  // Keep hidden input in sync when "Other" text is typed
+  document.getElementById("shellColorOther").addEventListener("input", function() {
+    document.getElementById("shellColor").value = this.value.trim();
+  });
+  document.getElementById("textColorOther").addEventListener("input", function() {
+    document.getElementById("textColor").value = this.value.trim();
+  });
+
+  // Close dropdowns when clicking outside
+  document.addEventListener("click", function(e) {
+    if (!e.target.closest(".color-picker")) {
+      document.querySelectorAll(".color-picker.open").forEach(p => p.classList.remove("open"));
+    }
+  });
 
   function updateCount(inputId, countId, max) {
     const len = document.getElementById(inputId).value.length;
-    const el = document.getElementById(countId);
+    const el  = document.getElementById(countId);
     el.textContent = len + " / " + max;
-    el.className = "char-count" + (len >= max ? " over" : len >= max * 0.8 ? " warn" : "");
+    el.className   = "char-count" + (len >= max ? " over" : len >= max * 0.8 ? " warn" : "");
   }
 
   document.getElementById("orderForm").addEventListener("submit", async function(e) {
     e.preventDefault();
-    const btn = document.getElementById("submitBtn");
+    const btn     = document.getElementById("submitBtn");
     const errorEl = document.getElementById("errorMsg");
     errorEl.style.display = "none";
-    btn.disabled = true;
+    btn.disabled  = true;
     btn.textContent = "Sending…";
 
     const formData = {
-      name:       document.getElementById("name").value.trim(),
-      contact:    document.getElementById("contact").value.trim(),
-      shellColor: resolveColor("shellColor", "shellColorOther"),
-      textColor:  resolveColor("textColor", "textColorOther"),
-      topLine:    document.getElementById("topLine").value.trim(),
-      bottomLine: document.getElementById("bottomLine").value.trim(),
-      notes:      document.getElementById("notes").value.trim(),
-      submittedAt: new Date().toLocaleString("en-US", {timeZoneName: "short"})
+      name:        document.getElementById("name").value.trim(),
+      contact:     document.getElementById("contact").value.trim(),
+      shellColor:  document.getElementById("shellColor").value,
+      textColor:   document.getElementById("textColor").value,
+      topLine:     document.getElementById("topLine").value.trim(),
+      bottomLine:  document.getElementById("bottomLine").value.trim(),
+      notes:       document.getElementById("notes").value.trim(),
+      submittedAt: new Date().toLocaleString("en-US", { timeZoneName: "short" })
     };
 
     let emailOk = false, sheetOk = false;
 
-    // 1. Send email via Formspree
     try {
       const res = await fetch(FORMSPREE_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          _subject: "New Socopex Box Order — " + formData.name
-        })
+        body: JSON.stringify({ ...formData, _subject: "New Socopex Box Order — " + formData.name })
       });
       emailOk = res.ok;
     } catch(_) {}
 
-    // 2. Log to Google Sheet
     try {
       await fetch(APPS_SCRIPT_URL, {
         method: "POST",
-        mode: "no-cors",   // Apps Script deployed as "Anyone" doesn't need CORS headers
+        mode: "no-cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
       });
-      sheetOk = true; // no-cors means we can't read the response, assume success
+      sheetOk = true;
     } catch(_) {}
 
-    btn.disabled = false;
+    btn.disabled    = false;
     btn.textContent = "Submit Order";
 
     if (emailOk || sheetOk) {
