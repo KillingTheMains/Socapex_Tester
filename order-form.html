@@ -44,6 +44,15 @@
       height: 100%;
       transition: transform 0.35s ease;
     }
+    .gallery-track img,
+    .gallery-track video {
+      flex-shrink: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
     .gallery-track img {
       flex-shrink: 0;
       width: 100%;
@@ -587,8 +596,10 @@
   (function() {
     const track  = document.getElementById("galleryTrack");
     const dotsEl = document.getElementById("galleryDots");
+    const video  = document.getElementById("galleryVideo");
     const total  = track.children.length;
     let cur = 0;
+    let timer = null;
 
     // Build dots
     for (let i = 0; i < total; i++) {
@@ -598,17 +609,46 @@
       dotsEl.appendChild(d);
     }
 
+    function isVideoSlide(idx) {
+      return track.children[idx] && track.children[idx].tagName === "VIDEO";
+    }
+
+    function scheduleNext(delay) {
+      clearTimeout(timer);
+      timer = setTimeout(() => goTo(cur + 1), delay);
+    }
+
     function goTo(idx) {
+      // Pause video if leaving video slide
+      if (isVideoSlide(cur) && video) {
+        video.pause();
+        video.currentTime = 0;
+        video.removeEventListener("ended", onVideoEnded);
+      }
       cur = (idx + total) % total;
       track.style.transform = `translateX(-${cur * 100}%)`;
       dotsEl.querySelectorAll(".gallery-dot").forEach((d, i) =>
         d.classList.toggle("active", i === cur));
+
+      // If landing on video slide, play it and advance when done
+      if (isVideoSlide(cur) && video) {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+        video.addEventListener("ended", onVideoEnded, { once: true });
+        clearTimeout(timer); // don't auto-advance while video plays
+      } else {
+        scheduleNext(4000);
+      }
+    }
+
+    function onVideoEnded() {
+      scheduleNext(500); // brief pause then move on
     }
 
     window.galleryMove = (dir) => goTo(cur + dir);
 
-    // Auto-advance every 4s
-    setInterval(() => goTo(cur + 1), 4000);
+    // Start auto-advance
+    scheduleNext(4000);
   })();
   // ──────────────────────────────────────────────────────────────────────────
 
