@@ -435,6 +435,11 @@
             <div class="dl">Notes</div>
             <div class="dv">${esc(o["Notes"])}</div>
           </div>` : ""}
+          ${o["Shipping Address"] ? `
+          <div class="detail-item" style="grid-column: 1/-1">
+            <div class="dl">Shipping</div>
+            <div class="dv" style="${o['Shipping Address'] === 'Pickup' ? 'color:#888' : 'color:#7ec8a0'}">${esc(o["Shipping Address"])}</div>
+          </div>` : ""}
         </div>
       </div>`;
     }).join("");
