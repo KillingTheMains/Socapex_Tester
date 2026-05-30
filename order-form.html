@@ -453,6 +453,8 @@
   <div class="success-msg" id="successMsg">
     ✅ <strong>Order received!</strong><br />
     We'll be in touch to confirm your order soon. Thank you!
+    <br /><br />
+    <button onclick="resetForm()" style="margin-top:8px;padding:10px 24px;background:#3a6347;color:#fff;border:none;border-radius:6px;font-size:14px;cursor:pointer;letter-spacing:0.5px;">Place Another Order</button>
   </div>
   </div><!-- /.card-inner -->
   <p style="text-align:center;padding:0 0 20px;font-size:11px;color:#333;letter-spacing:0.3px;">
@@ -653,6 +655,31 @@
       errorEl.style.display = "block";
     }
   });
+
+function resetForm() {
+  document.getElementById('orderForm').reset();
+  // Reset custom dropdowns to placeholder state
+  document.querySelectorAll('.swatch-dropdown').forEach(function(dd) {
+    var trigger = dd.querySelector('.dropdown-trigger');
+    var hidden = dd.querySelector('input[type=hidden]');
+    if (trigger && hidden) {
+      trigger.innerHTML = trigger.innerHTML; // keep existing label
+      hidden.value = '';
+    }
+  });
+  // Re-render dropdowns to initial state
+  document.querySelectorAll('.swatch-dropdown').forEach(function(dd) {
+    var trigger = dd.querySelector('.dropdown-trigger');
+    if (trigger) trigger.innerHTML = '<span class="placeholder">Select a color</span>';
+    var hidden = dd.querySelector('input[type=hidden]');
+    if (hidden) hidden.value = '';
+  });
+  // Hide other-color inputs
+  document.querySelectorAll('.other-color-wrap').forEach(function(w) { w.style.display = 'none'; });
+  document.getElementById('successMsg').style.display = 'none';
+  document.getElementById('orderForm').style.display = '';
+  window.scrollTo(0, 0);
+}
 </script>
 </body>
 </html>
