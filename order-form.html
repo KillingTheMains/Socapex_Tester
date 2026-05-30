@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sokopeks Tester Box Order</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: #f5f0eb;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px 60px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      max-width: 560px;
+      width: 100%;
+      padding: 40px 36px 44px;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .logo h1 {
+      font-size: 26px;
+      color: #2c2c2c;
+      letter-spacing: 0.5px;
+    }
+    .logo p {
+      color: #888;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #e8e2db;
+      margin: 0 0 28px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 16px;
+    }
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 7px;
+      font-weight: normal;
+    }
+
+    label .req {
+      color: #c0392b;
+      margin-left: 3px;
+    }
+
+    label .opt {
+      font-size: 13px;
+      color: #aaa;
+      margin-left: 5px;
+      font-style: italic;
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 16px;
+      font-family: Georgia, serif;
+      border: 1.5px solid #d0c8be;
+      border-radius: 7px;
+      background: #fdfaf7;
+      color: #222;
+      appearance: none;
+      -webkit-appearance: none;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 40px;
+    }
+    select:focus, input[type="text"]:focus {
+      border-color: #7a9e7e;
+    }
+
+    .hint {
+      font-size: 13px;
+      color: #aaa;
+      margin-top: 5px;
+      font-style: italic;
+    }
+
+    .optional-section {
+      background: #fdf8f3;
+      border: 1.5px dashed #d8cfc4;
+      border-radius: 9px;
+      padding: 20px 20px 16px;
+      margin-bottom: 20px;
+    }
+    .optional-section .section-label {
+      margin-bottom: 14px;
+    }
+
+    .char-count {
+      font-size: 12px;
+      color: #bbb;
+      text-align: right;
+      margin-top: 3px;
+    }
+    .char-count.warn { color: #e67e22; }
+    .char-count.over { color: #c0392b; font-weight: bold; }
+
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      font-size: 18px;
+      font-family: Georgia, serif;
+      background: #4a7c59;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 8px;
+      letter-spacing: 0.3px;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .submit-btn:hover { background: #3a6347; }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:disabled { background: #aaa; cursor: not-allowed; }
+
+    .success-msg {
+      display: none;
+      background: #eaf5ec;
+      border: 1.5px solid #7ab87e;
+      border-radius: 8px;
+      padding: 18px 20px;
+      color: #2d6e35;
+      font-size: 16px;
+      text-align: center;
+      margin-top: 20px;
+      line-height: 1.5;
+    }
+
+    .error-msg {
+      display: none;
+      background: #fdf0f0;
+      border: 1.5px solid #e07070;
+      border-radius: 8px;
+      padding: 14px 18px;
+      color: #8b2020;
+      font-size: 14px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 28px 20px 36px; }
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <h1>Sokopeks Tester Box</h1>
+    <p>Custom Order Form</p>
+  </div>
+  <hr class="divider" />
+
+  <form id="orderForm">
+
+    <!-- Name -->
+    <div class="field">
+      <label for="name">Your Name <span class="req">*</span></label>
+      <input type="text" id="name" name="name" placeholder="First and last name" required />
+    </div>
+
+    <!-- Contact -->
+    <div class="field">
+      <label for="contact">Phone or Email <span class="req">*</span></label>
+      <input type="text" id="contact" name="contact" placeholder="So we can reach you about your order" required />
+    </div>
+
+    <hr class="divider" />
+    <p class="section-label">Box Options</p>
+
+    <!-- Shell Color -->
+    <div class="field">
+      <label for="shellColor">Shell Color <span class="req">*</span></label>
+      <select id="shellColor" name="shellColor" required>
+        <option value="" disabled selected>— Choose a color —</option>
+        <option>Red</option>
+        <option>Orange</option>
+        <option>Yellow</option>
+        <option>Yellow-Green</option>
+        <option>Green</option>
+        <option>Blue-Green</option>
+        <option>Blue</option>
+        <option>Violet (Purple)</option>
+        <option>Red-Violet</option>
+        <option>Red-Orange</option>
+        <option>Yellow-Orange</option>
+        <option>Carnation Pink</option>
+        <option>Violet-Red</option>
+        <option>Blue-Violet</option>
+        <option>White</option>
+        <option>Black</option>
+        <option>Brown</option>
+        <option>Apricot</option>
+        <option>Burnt Sienna</option>
+        <option>Cadet Blue</option>
+        <option>Cerulean</option>
+        <option>Cornflower</option>
+        <option>Dandelion</option>
+        <option>Forest Green</option>
+        <option>Goldenrod</option>
+        <option>Gray</option>
+        <option>Lavender</option>
+        <option>Mahogany</option>
+        <option>Maize</option>
+        <option>Melon</option>
+        <option>Plum</option>
+        <option>Raw Umber</option>
+        <option>Salmon</option>
+        <option>Sea Green</option>
+        <option>Silver</option>
+        <option>Sky Blue</option>
+        <option>Spring Green</option>
+        <option>Tan</option>
+        <option>Thistle</option>
+        <option>Turquoise Blue</option>
+        <option>Wisteria</option>
+      </select>
+    </div>
+
+    <!-- Text Color -->
+    <div class="field">
+      <label for="textColor">Text / Lettering Color <span class="req">*</span></label>
+      <select id="textColor" name="textColor" required>
+        <option value="" disabled selected>— Choose a color —</option>
+        <option>Red</option>
+        <option>Orange</option>
+        <option>Yellow</option>
+        <option>Yellow-Green</option>
+        <option>Green</option>
+        <option>Blue-Green</option>
+        <option>Blue</option>
+        <option>Violet (Purple)</option>
+        <option>Red-Violet</option>
+        <option>Red-Orange</option>
+        <option>Yellow-Orange</option>
+        <option>Carnation Pink</option>
+        <option>Violet-Red</option>
+        <option>Blue-Violet</option>
+        <option>White</option>
+        <option>Black</option>
+        <option>Brown</option>
+        <option>Apricot</option>
+        <option>Burnt Sienna</option>
+        <option>Cadet Blue</option>
+        <option>Cerulean</option>
+        <option>Cornflower</option>
+        <option>Dandelion</option>
+        <option>Forest Green</option>
+        <option>Goldenrod</option>
+        <option>Gray</option>
+        <option>Lavender</option>
+        <option>Mahogany</option>
+        <option>Maize</option>
+        <option>Melon</option>
+        <option>Plum</option>
+        <option>Raw Umber</option>
+        <option>Salmon</option>
+        <option>Sea Green</option>
+        <option>Silver</option>
+        <option>Sky Blue</option>
+        <option>Spring Green</option>
+        <option>Tan</option>
+        <option>Thistle</option>
+        <option>Turquoise Blue</option>
+        <option>Wisteria</option>
+      </select>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Custom Bottom Text (optional) -->
+    <div class="optional-section">
+      <p class="section-label">Custom Text on Bottom <span style="font-weight:normal;text-transform:none;letter-spacing:0;font-size:12px;color:#bbb;">(optional — leave blank for no custom text)</span></p>
+
+      <div class="field" style="margin-bottom:14px;">
+        <label for="topLine">Top Line <span class="opt">optional</span></label>
+        <input type="text" id="topLine" name="topLine" placeholder="e.g. your name" maxlength="30" oninput="updateCount('topLine','topCount',30)" />
+        <div class="char-count" id="topCount">0 / 30</div>
+      </div>
+
+      <div class="field" style="margin-bottom:4px;">
+        <label for="bottomLine">Bottom Line <span class="opt">optional</span></label>
+        <input type="text" id="bottomLine" name="bottomLine" placeholder="e.g. phone number" maxlength="30" oninput="updateCount('bottomLine','bottomCount',30)" />
+        <div class="char-count" id="bottomCount">0 / 30</div>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="field">
+      <label for="notes">Any other notes? <span class="opt">optional</span></label>
+      <input type="text" id="notes" name="notes" placeholder="Special requests, questions, etc." />
+    </div>
+
+    <button type="submit" class="submit-btn" id="submitBtn">Submit Order</button>
+
+    <div class="error-msg" id="errorMsg">
+      Something went wrong sending your order. Please try again, or contact Jason directly.
+    </div>
+  </form>
+
+  <div class="success-msg" id="successMsg">
+    ✅ <strong>Order received!</strong><br />
+    Jason will be in touch to confirm your order soon. Thank you!
+  </div>
+</div>
+
+<script>
+  // ─── CONFIGURATION ────────────────────────────────────────────────────────
+  // 1. Replace with your Formspree endpoint after creating a free account at formspree.io
+  const FORMSPREE_URL = "https://formspree.io/f/mojbzqqo";
+
+  // 2. Replace with your Google Apps Script Web App URL after deploying (see setup guide)
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx50yqUoPy-CyuyGwG7l9oXbC5ig2Qd9sC5mssCT-Y4eQRFAcWS5y-ksR9MN5cdrkE2/exec";
+  // ──────────────────────────────────────────────────────────────────────────
+
+  function updateCount(inputId, countId, max) {
+    const len = document.getElementById(inputId).value.length;
+    const el = document.getElementById(countId);
+    el.textContent = len + " / " + max;
+    el.className = "char-count" + (len >= max ? " over" : len >= max * 0.8 ? " warn" : "");
+  }
+
+  document.getElementById("orderForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById("submitBtn");
+    const errorEl = document.getElementById("errorMsg");
+    errorEl.style.display = "none";
+    btn.disabled = true;
+    btn.textContent = "Sending…";
+
+    const formData = {
+      name:       document.getElementById("name").value.trim(),
+      contact:    document.getElementById("contact").value.trim(),
+      shellColor: document.getElementById("shellColor").value,
+      textColor:  document.getElementById("textColor").value,
+      topLine:    document.getElementById("topLine").value.trim(),
+      bottomLine: document.getElementById("bottomLine").value.trim(),
+      notes:      document.getElementById("notes").value.trim(),
+      submittedAt: new Date().toLocaleString("en-US", {timeZoneName: "short"})
+    };
+
+    let emailOk = false, sheetOk = false;
+
+    // 1. Send email via Formspree
+    try {
+      const res = await fetch(FORMSPREE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          _subject: "New Sokopeks Box Order — " + formData.name
+        })
+      });
+      emailOk = res.ok;
+    } catch(_) {}
+
+    // 2. Log to Google Sheet
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",   // Apps Script deployed as "Anyone" doesn't need CORS headers
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+      sheetOk = true; // no-cors means we can't read the response, assume success
+    } catch(_) {}
+
+    btn.disabled = false;
+    btn.textContent = "Submit Order";
+
+    if (emailOk || sheetOk) {
+      document.getElementById("orderForm").style.display = "none";
+      document.getElementById("successMsg").style.display = "block";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      errorEl.style.display = "block";
+    }
+  });
+</script>
+</body>
+</html>
