@@ -377,8 +377,8 @@
 
     <!-- Contact -->
     <div class="field">
-      <label for="contact">Phone or Email <span class="req">*</span></label>
-      <input type="text" id="contact" name="contact" placeholder="" required />
+      <label for="contact">Email Address <span class="req">*</span></label>
+      <input type="email" id="contact" name="contact" placeholder="" required />
     </div>
 
     <hr class="divider" />
@@ -623,7 +623,7 @@
       const res = await fetch(FORMSPREE_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({ ...formData, _subject: "New Socopex Box Order — " + formData.name })
+        body: JSON.stringify({ ...formData, _subject: "New Socopex Box Order — " + formData.name, _replyto: formData.contact })
       });
       emailOk = res.ok;
     } catch(_) {}
