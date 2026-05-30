@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Socopex Tester Box Order</title>
-  <meta property="og:title" content="Socopex Tester Box — Custom Order" />
-  <meta property="og:description" content="Order your custom 3D printed Socopex tester box." />
+  <title>Socapex Tester Box Order</title>
+  <meta property="og:title" content="Socapex Tester Box — Custom Order" />
+  <meta property="og:description" content="Order your custom 3D printed Socapex tester box." />
   <meta property="og:image" content="gallery/product3.jpg" />
   <meta property="og:type" content="website" />
   <style>
@@ -353,11 +353,11 @@
   <!-- Product gallery -->
   <div class="gallery" id="gallery">
     <div class="gallery-track" id="galleryTrack">
-      <img src="gallery/product1.jpg" alt="Socopex tester boxes — colored shells" />
-      <img src="gallery/product2.jpg" alt="Socopex tester box — voltage display panel" />
-      <img src="gallery/product3.jpg" alt="Socopex tester box — lit up blue" />
-      <img src="gallery/product4.jpg" alt="Socopex tester box — purple with display" />
-      <img src="gallery/product5.jpg" alt="Socopex tester boxes — four colors" />
+      <img src="gallery/product1.jpg" alt="Socapex tester boxes — colored shells" />
+      <img src="gallery/product2.jpg" alt="Socapex tester box — voltage display panel" />
+      <img src="gallery/product3.jpg" alt="Socapex tester box — lit up blue" />
+      <img src="gallery/product4.jpg" alt="Socapex tester box — purple with display" />
+      <img src="gallery/product5.jpg" alt="Socapex tester boxes — four colors" />
     </div>
     <button class="gallery-btn prev" onclick="galleryMove(-1)">&#8249;</button>
     <button class="gallery-btn next" onclick="galleryMove(1)">&#8250;</button>
@@ -366,7 +366,7 @@
 
   <div class="card-inner">
   <div class="logo">
-    <h1>Socopex Tester Box</h1>
+    <h1>Socapex Tester Box</h1>
     <p>Custom Order Form</p>
   </div>
   <hr class="divider" />
@@ -629,7 +629,7 @@
       const res = await fetch(FORMSPREE_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify({ ...formData, _subject: "New Socopex Box Order — " + formData.name, _replyto: formData.contact })
+        body: JSON.stringify({ ...formData, _subject: "New Socapex Box Order — " + formData.name, _replyto: formData.contact })
       });
       emailOk = res.ok;
     } catch(_) {}
