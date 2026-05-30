@@ -214,10 +214,13 @@
       position: fixed;
       inset: 0;
       background: #f0f4f1;
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
       z-index: 100;
+    }
+    .login-overlay.visible {
+      display: flex;
     }
     .login-box {
       background: #fff;
@@ -258,7 +261,7 @@
 </div>
 
 <!-- Simple password gate so the dashboard isn't wide open -->
-<div class="login-overlay" id="loginOverlay">
+<div class="login-overlay visible" id="loginOverlay">
   <div class="login-box">
     <h2>🔒 Order Dashboard</h2>
     <p>Enter your dashboard password to continue.</p>
@@ -308,7 +311,7 @@
   function checkPassword() {
     const val = document.getElementById("passwordInput").value;
     if (val === DASHBOARD_PASSWORD) {
-      document.getElementById("loginOverlay").style.display = "none";
+      document.getElementById("loginOverlay").classList.remove("visible");
       loadOrders();
     } else {
       document.getElementById("loginError").style.display = "block";
