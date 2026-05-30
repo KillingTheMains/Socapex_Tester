@@ -449,15 +449,15 @@
           </div>` : ""}
 
       <div class="file-row">
-        \${o["Print File"] ? \`
-          <a class="file-link" href="\${esc(o['Print File URL'] || '#')}" target="_blank" download>
-            📎 \${esc(o["Print File"])}
+        ${o["Print File"] ? `
+          <a class="file-link" href="${esc(o['Print File URL'] || '#')}" target="_blank" download>
+            📎 ${esc(o["Print File"])}
           </a>
-          <button class="file-attach-btn" onclick="attachFile(\${idx})">Replace</button>
-        \` : \`
-          <button class="file-attach-btn" onclick="attachFile(\${idx})">📎 Attach Print File</button>
-        \`}
-        <input type="file" class="file-input-hidden" id="fileInput_\${idx}" accept=".3mf,.stl,.obj" onchange="handleFileUpload(\${idx}, this)">
+          <button class="file-attach-btn" onclick="attachFile(${idx})">Replace</button>
+        ` : `
+          <button class="file-attach-btn" onclick="attachFile(${idx})">📎 Attach Print File</button>
+        `}
+        <input type="file" class="file-input-hidden" id="fileInput_${idx}" accept=".3mf,.stl,.obj" onchange="handleFileUpload(${idx}, this)">
       </div>
         </div>
       </div>`;
