@@ -783,6 +783,15 @@
     }
   });
 
+  function toggleShipping() {
+    const checked = document.getElementById("shippingToggle").checked;
+    const sub = document.getElementById("shippingSubForm");
+    sub.classList.toggle("visible", checked);
+    ["shipName","shipStreet","shipCity","shipState","shipZip"].forEach(id => {
+      document.getElementById(id).required = checked;
+    });
+  }
+
 function resetForm() {
   document.getElementById('orderForm').reset();
   // Reset custom dropdowns to placeholder state
