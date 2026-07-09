@@ -252,6 +252,10 @@
     .file-link { font-size: 13px; color: #4a7c59; text-decoration: none; display: flex; align-items: center; gap: 5px; }
     .file-link:hover { text-decoration: underline; }
     .file-input-hidden { display: none; }
+    .file-send-btn { font-size: 12px; padding: 5px 14px; background: #4a7c59; border: none; border-radius: 5px; cursor: pointer; color: #fff; font-weight: 600; }
+    .file-send-btn:hover { background: #3a6348; }
+    .file-sent-badge { font-size: 12px; color: #4a7c59; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+    .file-sent-time { font-size: 11px; color: #999; font-weight: normal; margin-left: 4px; }
   </style>
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
@@ -453,7 +457,12 @@
           <a class="file-link" href="${esc(o['Print File URL'] || '#')}" target="_blank" download>
             📎 ${esc(o["Print File"])}
           </a>
-          <button class="file-attach-btn" onclick="attachFile(${idx})">Replace</button>
+          <button class="file-attach-btn" onclick="attachFile(${idx})" style="margin-left:4px;">Replace</button>
+          ${o["Sent to Printer At"] ? `
+            <span class="file-sent-badge">✅ Sent to Printer <span class="file-sent-time">${esc(o["Sent to Printer At"])}</span></span>
+          ` : `
+            <button class="file-send-btn" onclick="sendToPrinter(${idx})">📤 Send to Printer</button>
+          `}
         ` : `
           <button class="file-attach-btn" onclick="attachFile(${idx})">📎 Attach Print File</button>
         `}
@@ -559,6 +568,7 @@
         if (result.status === "ok") {
           order["Print File"] = file.name;
           order["Print File URL"] = result.fileUrl;
+          if (result.attachedAt) order["File Attached At"] = result.attachedAt;
           renderOrders();
         } else {
           alert("Upload failed: " + (result.message || "unknown error"));
@@ -568,6 +578,35 @@
       }
     };
     reader.readAsDataURL(file);
+  }
+
+  async function sendToPrinter(idx) {
+    const order = allOrders[idx];
+    if (!order["Print File URL"]) {
+      alert("Please attach a print file first.");
+      return;
+    }
+    if (!confirm("Send this order to Phil at the printer?\n\nCustomer: " + (order["Name"] || "Unknown") + "\nFile: " + (order["Print File"] || "—"))) return;
+
+    try {
+      const res = await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action:   "sendToPrinter",
+          rowIndex: order._rowIndex
+        })
+      });
+      const result = await res.json();
+      if (result.status === "ok") {
+        order["Sent to Printer At"] = result.sentAt;
+        renderOrders();
+      } else {
+        alert("Failed to send: " + (result.message || "unknown error"));
+      }
+    } catch(err) {
+      alert("Error: " + err.message);
+    }
   }
 
 </script>
