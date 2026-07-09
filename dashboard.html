@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Socapex — Order Dashboard</title>
+  <title>Socopex — Order Dashboard</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -214,13 +214,10 @@
       position: fixed;
       inset: 0;
       background: #f0f4f1;
-      display: none;
+      display: flex;
       align-items: center;
       justify-content: center;
       z-index: 100;
-    }
-    .login-overlay.visible {
-      display: flex;
     }
     .login-box {
       background: #fff;
@@ -245,24 +242,7 @@
     }
     .login-box input:focus { border-color: #4a7c59; }
     .login-error { color: #c0392b; font-size: 13px; margin-bottom: 10px; }
-
-    .file-row { border-top: 1px solid #eee; padding: 10px 16px 12px; display: flex; align-items: center; gap: 10px; }
-    .file-attach-btn { font-size: 12px; padding: 5px 12px; background: #f0f0f0; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; color: #444; }
-    .file-attach-btn:hover { background: #e0e0e0; }
-    .file-link { font-size: 13px; color: #4a7c59; text-decoration: none; display: flex; align-items: center; gap: 5px; }
-    .file-link:hover { text-decoration: underline; }
-    .file-input-hidden { display: none; }
-    .file-send-btn { font-size: 12px; padding: 5px 14px; background: #4a7c59; border: none; border-radius: 5px; cursor: pointer; color: #fff; font-weight: 600; }
-    .file-send-btn:hover { background: #3a6348; }
-    .file-sent-badge { font-size: 12px; color: #4a7c59; font-weight: 600; display: flex; align-items: center; gap: 4px; }
-    .file-sent-time { font-size: 11px; color: #999; font-weight: normal; margin-left: 4px; }
   </style>
-  <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
-  <meta property="og:title" content="Socapex Order Dashboard" />
-  <meta property="og:image" content="https://killingthemains.github.io/Socapex_Tester/og-image.jpg" />
-  <meta property="og:url" content="https://killingthemains.github.io/Socapex_Tester/dashboard.html" />
-  <meta property="og:type" content="website" />
 </head>
 <body>
 
@@ -278,7 +258,7 @@
 </div>
 
 <!-- Simple password gate so the dashboard isn't wide open -->
-<div class="login-overlay visible" id="loginOverlay">
+<div class="login-overlay" id="loginOverlay">
   <div class="login-box">
     <h2>🔒 Order Dashboard</h2>
     <p>Enter your dashboard password to continue.</p>
@@ -290,7 +270,7 @@
 
 <header>
   <div>
-    <h1>📦 Socapex Orders</h1>
+    <h1>📦 Socopex Orders</h1>
     <p id="lastUpdated">Loading…</p>
   </div>
   <div class="controls">
@@ -316,18 +296,23 @@
 <script>
   // ─── CONFIGURATION ────────────────────────────────────────────────────
   // Replace with your Google Apps Script Web App URL (same one as in order-form.html)
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynhjNFLG3Y7iZJ5tve20ghH18GDbsifdgYrs6ImJEoicYN8bCB2rNXYcT-rzywv0Lj/exec";
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx29n1eem9zsYqzJd1VH0h4w4aXTfrFEzq-vuah41jTfhtyPrIKb9Sx-66YHLqctIWB/exec";
 
   // Simple dashboard password — change this to whatever you want
-  const DASHBOARD_PASSWORD = "socapex2024";
+  const DASHBOARD_PASSWORD = "socopex2024";
   // ──────────────────────────────────────────────────────────────────────
 
   let allOrders = [];
 
   // Password gate
   function checkPassword() {
-    document.getElementById("loginOverlay").classList.remove("visible");
-    loadOrders();
+    const val = document.getElementById("passwordInput").value;
+    if (val === DASHBOARD_PASSWORD) {
+      document.getElementById("loginOverlay").style.display = "none";
+      loadOrders();
+    } else {
+      document.getElementById("loginError").style.display = "block";
+    }
   }
   document.getElementById("passwordInput").addEventListener("keydown", function(e) {
     if (e.key === "Enter") checkPassword();
@@ -446,28 +431,6 @@
             <div class="dl">Notes</div>
             <div class="dv">${esc(o["Notes"])}</div>
           </div>` : ""}
-          ${o["Shipping Address"] ? `
-          <div class="detail-item" style="grid-column: 1/-1">
-            <div class="dl">Shipping</div>
-            <div class="dv" style="${o['Shipping Address'] === 'Pickup' ? 'color:#888' : 'color:#7ec8a0'}">${esc(o["Shipping Address"])}</div>
-          </div>` : ""}
-
-      <div class="file-row">
-        ${o["Print File"] ? `
-          <a class="file-link" href="${esc(o['Print File URL'] || '#')}" target="_blank" download>
-            📎 ${esc(o["Print File"])}
-          </a>
-          <button class="file-attach-btn" onclick="attachFile(${idx})" style="margin-left:4px;">Replace</button>
-          ${o["Sent to Printer At"] ? `
-            <span class="file-sent-badge">✅ Sent to Printer <span class="file-sent-time">${esc(o["Sent to Printer At"])}</span></span>
-          ` : `
-            <button class="file-send-btn" onclick="sendToPrinter(${idx})">📤 Send to Printer</button>
-          `}
-        ` : `
-          <button class="file-attach-btn" onclick="attachFile(${idx})">📎 Attach Print File</button>
-        `}
-        <input type="file" class="file-input-hidden" id="fileInput_${idx}" accept=".3mf,.stl,.obj" onchange="handleFileUpload(${idx}, this)">
-      </div>
         </div>
       </div>`;
     }).join("");
@@ -495,7 +458,7 @@
   function showNotifyDialog(idx, newStatus) {
     const overlay = document.getElementById("notifyOverlay");
     const msg     = document.getElementById("notifyMsg");
-    msg.textContent = "Status → '" + newStatus + "'. Notify the customer by email?";
+    msg.textContent = "Status → "" + newStatus + "". Notify the customer by email?";
     overlay.style.display = "flex";
 
     document.getElementById("notifyYes").onclick = function() {
@@ -538,77 +501,6 @@
   function esc(str) {
     return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   }
-
-  function attachFile(idx) {
-    document.getElementById("fileInput_" + idx).click();
-  }
-
-  async function handleFileUpload(idx, input) {
-    const file = input.files[0];
-    if (!file) return;
-    const order = allOrders[idx];
-    const btn = document.querySelector(`#fileInput_${idx}`).previousElementSibling || document.querySelector(`[onclick="attachFile(${idx})"]`);
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-      const base64 = e.target.result.split(",")[1];
-      try {
-        const res = await fetch(APPS_SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "uploadFile",
-            rowIndex: order._rowIndex,
-            fileName: file.name,
-            fileData: base64,
-            mimeType: file.type || "application/octet-stream",
-            customerName: order["Name"] || "Unknown"
-          })
-        });
-        const result = await res.json();
-        if (result.status === "ok") {
-          order["Print File"] = file.name;
-          order["Print File URL"] = result.fileUrl;
-          if (result.attachedAt) order["File Attached At"] = result.attachedAt;
-          renderOrders();
-        } else {
-          alert("Upload failed: " + (result.message || "unknown error"));
-        }
-      } catch(err) {
-        alert("Upload error: " + err.message);
-      }
-    };
-    reader.readAsDataURL(file);
-  }
-
-  async function sendToPrinter(idx) {
-    const order = allOrders[idx];
-    if (!order["Print File URL"]) {
-      alert("Please attach a print file first.");
-      return;
-    }
-    if (!confirm("Send this order to Phil at the printer?\n\nCustomer: " + (order["Name"] || "Unknown") + "\nFile: " + (order["Print File"] || "—"))) return;
-
-    try {
-      const res = await fetch(APPS_SCRIPT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action:   "sendToPrinter",
-          rowIndex: order._rowIndex
-        })
-      });
-      const result = await res.json();
-      if (result.status === "ok") {
-        order["Sent to Printer At"] = result.sentAt;
-        renderOrders();
-      } else {
-        alert("Failed to send: " + (result.message || "unknown error"));
-      }
-    } catch(err) {
-      alert("Error: " + err.message);
-    }
-  }
-
 </script>
 </body>
 </html>
