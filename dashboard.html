@@ -298,21 +298,12 @@
   // Replace with your Google Apps Script Web App URL (same one as in order-form.html)
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx29n1eem9zsYqzJd1VH0h4w4aXTfrFEzq-vuah41jTfhtyPrIKb9Sx-66YHLqctIWB/exec";
 
-  // Simple dashboard password — change this to whatever you want
-  const DASHBOARD_PASSWORD = "socopex2024";
-  // ──────────────────────────────────────────────────────────────────────
-
   let allOrders = [];
 
-  // Password gate
+  // Password gate (no password required — just click Sign In)
   function checkPassword() {
-    const val = document.getElementById("passwordInput").value;
-    if (val === DASHBOARD_PASSWORD) {
-      document.getElementById("loginOverlay").style.display = "none";
-      loadOrders();
-    } else {
-      document.getElementById("loginError").style.display = "block";
-    }
+    document.getElementById("loginOverlay").style.display = "none";
+    loadOrders();
   }
   document.getElementById("passwordInput").addEventListener("keydown", function(e) {
     if (e.key === "Enter") checkPassword();
