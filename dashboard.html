@@ -23,19 +23,10 @@
       flex-wrap: wrap;
       gap: 12px;
     }
-    header h1 {
-      font-size: 22px;
-      color: #2a4a30;
-      font-weight: 700;
-    }
-    header p { font-size: 13px; color: #888; }
+    header h1 { font-size: 22px; color: #2a4a30; font-weight: 700; }
+    header p  { font-size: 13px; color: #888; }
 
-    .controls {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 
     .btn {
       padding: 8px 16px;
@@ -48,8 +39,10 @@
     }
     .btn-primary { background: #4a7c59; color: #fff; }
     .btn-primary:hover { background: #3a6347; }
+    .btn-primary:disabled { background: #b0c9b8; cursor: not-allowed; }
     .btn-ghost { background: #e4ede6; color: #3a6347; }
     .btn-ghost:hover { background: #d3e4d6; }
+    .btn-sm { padding: 6px 12px; font-size: 13px; }
 
     select.filter-select {
       padding: 7px 12px;
@@ -101,15 +94,8 @@
       gap: 8px;
       border-bottom: 1px solid #f0f0f0;
     }
-    .order-header .name {
-      font-size: 17px;
-      font-weight: 600;
-      color: #1a1a1a;
-    }
-    .order-header .meta {
-      font-size: 12px;
-      color: #aaa;
-    }
+    .order-header .name { font-size: 17px; font-weight: 600; color: #1a1a1a; }
+    .order-header .meta { font-size: 12px; color: #aaa; }
 
     .status-badge {
       padding: 4px 12px;
@@ -139,30 +125,61 @@
 
     .color-swatch {
       display: inline-block;
-      width: 14px;
-      height: 14px;
+      width: 14px; height: 14px;
       border-radius: 3px;
       border: 1px solid rgba(0,0,0,0.15);
       vertical-align: middle;
       margin-right: 5px;
-      position: relative;
-      top: -1px;
+      position: relative; top: -1px;
     }
 
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: #aaa;
+    /* Order footer — file upload + send to printer */
+    .order-footer {
+      border-top: 1px solid #f0f0f0;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: #fafafa;
     }
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #555;
+      min-width: 0;
+      flex: 1;
+    }
+    .file-info.no-file { color: #bbb; font-style: italic; }
+    .file-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+    .file-meta { font-size: 11px; color: #aaa; white-space: nowrap; }
+    .sent-meta  { font-size: 11px; color: #0f5132; white-space: nowrap; }
+
+    .order-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+    .upload-label {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      background: #e4ede6;
+      color: #3a6347;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .upload-label:hover { background: #d3e4d6; }
+    .upload-label.busy  { opacity: 0.6; pointer-events: none; }
+
+    .empty-state { text-align: center; padding: 60px 20px; color: #aaa; }
     .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
     .empty-state p { font-size: 16px; }
 
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: #888;
-      font-size: 15px;
-    }
+    .loading { text-align: center; padding: 40px; color: #888; font-size: 15px; }
 
     .error-banner {
       background: #fdf0f0;
@@ -177,8 +194,7 @@
 
     /* Notify dialog */
     .notify-overlay {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background: rgba(0,0,0,0.55);
       display: none;
       align-items: center;
@@ -197,12 +213,8 @@
     .notify-box p { color: #333; font-size: 15px; margin-bottom: 22px; line-height: 1.5; }
     .notify-actions { display: flex; gap: 10px; justify-content: center; }
     .notify-actions button {
-      padding: 9px 22px;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      font-family: inherit;
+      padding: 9px 22px; border-radius: 6px; border: none;
+      cursor: pointer; font-size: 14px; font-family: inherit;
     }
     #notifyYes { background: #4a7c59; color: #fff; }
     #notifyYes:hover { background: #3a6347; }
@@ -211,8 +223,7 @@
 
     /* Login gate */
     .login-overlay {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background: #f0f4f1;
       display: flex;
       align-items: center;
@@ -231,17 +242,11 @@
     .login-box h2 { color: #2a4a30; margin-bottom: 8px; font-size: 20px; }
     .login-box p  { color: #888; font-size: 13px; margin-bottom: 22px; }
     .login-box input {
-      width: 100%;
-      padding: 11px 14px;
-      font-size: 16px;
-      border: 1.5px solid #c8d9cc;
-      border-radius: 7px;
-      margin-bottom: 14px;
-      outline: none;
-      font-family: inherit;
+      width: 100%; padding: 11px 14px; font-size: 16px;
+      border: 1.5px solid #c8d9cc; border-radius: 7px;
+      margin-bottom: 14px; outline: none; font-family: inherit;
     }
     .login-box input:focus { border-color: #4a7c59; }
-    .login-error { color: #c0392b; font-size: 13px; margin-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -257,13 +262,12 @@
   </div>
 </div>
 
-<!-- Simple password gate so the dashboard isn't wide open -->
+<!-- Login gate (no password required — just click Sign In) -->
 <div class="login-overlay" id="loginOverlay">
   <div class="login-box">
-    <h2>🔒 Order Dashboard</h2>
-    <p>Enter your dashboard password to continue.</p>
-    <input type="password" id="passwordInput" placeholder="Password" />
-    <div class="login-error" id="loginError" style="display:none">Wrong password. Try again.</div>
+    <h2>📦 Order Dashboard</h2>
+    <p>Socapex Tester Fabrication and Design Inc.</p>
+    <input type="password" id="passwordInput" placeholder="Password (leave blank)" />
     <button class="btn btn-primary" style="width:100%;padding:11px" onclick="checkPassword()">Sign In</button>
   </div>
 </div>
@@ -294,13 +298,11 @@
 </div>
 
 <script>
-  // ─── CONFIGURATION ────────────────────────────────────────────────────
-  // Replace with your Google Apps Script Web App URL (same one as in order-form.html)
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx29n1eem9zsYqzJd1VH0h4w4aXTfrFEzq-vuah41jTfhtyPrlKb9Sx-66YHLqctIWB/exec";
 
   let allOrders = [];
 
-  // Password gate (no password required — just click Sign In)
+  // Login gate — no password required
   function checkPassword() {
     document.getElementById("loginOverlay").style.display = "none";
     loadOrders();
@@ -309,6 +311,7 @@
     if (e.key === "Enter") checkPassword();
   });
 
+  // ── Load orders from Apps Script ─────────────────────────────────────────
   async function loadOrders() {
     document.getElementById("loadingEl").style.display = "block";
     document.getElementById("errorBanner").style.display = "none";
@@ -319,13 +322,11 @@
       const res  = await fetch(APPS_SCRIPT_URL + "?v=" + Date.now());
       const data = await res.json();
       allOrders  = data.orders || [];
-
       document.getElementById("lastUpdated").textContent =
         "Last refreshed: " + new Date().toLocaleTimeString();
       document.getElementById("loadingEl").style.display = "none";
       renderStats();
       renderOrders();
-
     } catch (err) {
       document.getElementById("loadingEl").style.display = "none";
       const banner = document.getElementById("errorBanner");
@@ -334,13 +335,13 @@
     }
   }
 
+  // ── Stats bar ────────────────────────────────────────────────────────────
   function renderStats() {
-    const total   = allOrders.length;
+    const total     = allOrders.length;
     const received  = allOrders.filter(o => o["Status"] === "Received").length;
     const inDesign  = allOrders.filter(o => o["Status"] === "In Design").length;
     const printing  = allOrders.filter(o => o["Status"] === "Printing").length;
     const complete  = allOrders.filter(o => o["Status"] === "Complete").length;
-
     document.getElementById("statsBar").innerHTML = `
       <div class="stat-card"><div class="num">${total}</div><div class="lbl">Total</div></div>
       <div class="stat-card"><div class="num" style="color:#856404">${received}</div><div class="lbl">Received</div></div>
@@ -350,7 +351,7 @@
     `;
   }
 
-  // Map color names to approximate CSS colors for swatches
+  // ── Color swatches ───────────────────────────────────────────────────────
   const COLOR_MAP = {
     "Red":"#ee1c24","Orange":"#ff7f00","Yellow":"#fce03a","Yellow-Green":"#9ccc3d",
     "Green":"#1ab24a","Blue-Green":"#009b77","Blue":"#0066b2","Violet (Purple)":"#8b4eb6",
@@ -368,81 +369,121 @@
 
   function swatch(colorName) {
     const hex = COLOR_MAP[colorName] || "#eee";
-    return `<span class="color-swatch" style="background:${hex}" title="${colorName}"></span>`;
+    return "<span class=\"color-swatch\" style=\"background:" + hex + "\" title=\"" + colorName + "\"></span>";
   }
 
+  // ── Render order cards ───────────────────────────────────────────────────
   function renderOrders() {
-    const filter  = document.getElementById("statusFilter").value;
-    const orders  = filter === "all" ? allOrders :
-                    allOrders.filter(o => o["Status"] === filter);
-    const listEl  = document.getElementById("orderList");
+    const filter = document.getElementById("statusFilter").value;
+    const orders = filter === "all" ? allOrders :
+                   allOrders.filter(o => o["Status"] === filter);
+    const listEl = document.getElementById("orderList");
 
     if (orders.length === 0) {
-      listEl.innerHTML = `
-        <div class="empty-state">
-          <div class="icon">📭</div>
-          <p>${filter === "all" ? "No orders yet." : "No " + filter.toLowerCase() + " orders."}</p>
-        </div>`;
+      listEl.innerHTML =
+        "<div class=\"empty-state\">" +
+        "<div class=\"icon\">📭</div>" +
+        "<p>" + (filter === "all" ? "No orders yet." : "No " + filter.toLowerCase() + " orders.") + "</p>" +
+        "</div>";
       return;
     }
 
-    listEl.innerHTML = orders.map((o, idx) => {
-      const statusClass = "status-" + (o["Status"] || "Received").replace(" ","");
-      const hasText = o["Top Line"] && o["Top Line"] !== "(none)" || o["Bottom Line"] && o["Bottom Line"] !== "(none)";
-      return `
-      <div class="order-card">
-        <div class="order-header">
-          <div>
-            <div class="name">${esc(o["Name"] || "—")}</div>
-            <div class="meta">${esc(o["Contact"] || "")}  ·  ${esc(o["Submitted At"] || "")}</div>
-          </div>
-          <button class="status-badge ${statusClass}" onclick="cycleStatus(${idx})" title="Click to change status">
-            ${esc(o["Status"] || "Received")}
-          </button>
-        </div>
-        <div class="order-body">
-          <div class="detail-item">
-            <div class="dl">Shell Color</div>
-            <div class="dv">${swatch(o["Shell Color"])}${esc(o["Shell Color"] || "—")}</div>
-          </div>
-          <div class="detail-item">
-            <div class="dl">Text Color</div>
-            <div class="dv">${swatch(o["Text Color"])}${esc(o["Text Color"] || "—")}</div>
-          </div>
-          <div class="detail-item">
-            <div class="dl">Bottom — Top Line</div>
-            <div class="dv ${!hasText || o['Top Line']==='(none)' ? 'none' : ''}">${esc(o["Top Line"] && o["Top Line"] !== "(none)" ? o["Top Line"] : "none")}</div>
-          </div>
-          <div class="detail-item">
-            <div class="dl">Bottom — Bottom Line</div>
-            <div class="dv ${!hasText || o['Bottom Line']==='(none)' ? 'none' : ''}">${esc(o["Bottom Line"] && o["Bottom Line"] !== "(none)" ? o["Bottom Line"] : "none")}</div>
-          </div>
-          ${o["Notes"] ? `
-          <div class="detail-item" style="grid-column: 1/-1">
-            <div class="dl">Notes</div>
-            <div class="dv">${esc(o["Notes"])}</div>
-          </div>` : ""}
-        </div>
-      </div>`;
+    listEl.innerHTML = orders.map(function(o, idx) {
+      const realIdx    = allOrders.indexOf(o);
+      const statusClass = "status-" + (o["Status"] || "Received").replace(" ", "");
+      const hasText    = (o["Top Line"] && o["Top Line"] !== "(none)") ||
+                         (o["Bottom Line"] && o["Bottom Line"] !== "(none)");
+      const hasFile    = !!o["Print File"];
+      const sentAt     = o["Sent to Printer At"] || "";
+
+      const fileSection = hasFile
+        ? "<span>📎</span><span class=\"file-name\">" + esc(o["Print File"]) + "</span>" +
+          (o["File Attached At"] ? "<span class=\"file-meta\">attached " + esc(o["File Attached At"]) + "</span>" : "") +
+          (sentAt ? "<span class=\"sent-meta\">✓ sent " + esc(sentAt) + "</span>" : "")
+        : "<span class=\"no-file\" style=\"color:#bbb;font-style:italic;font-size:13px;\">No print file attached</span>";
+
+      return "<div class=\"order-card\">" +
+
+        // Header
+        "<div class=\"order-header\">" +
+          "<div>" +
+            "<div class=\"name\">" + esc(o["Name"] || "—") + "</div>" +
+            "<div class=\"meta\">" + esc(o["Contact"] || "") + "  ·  " + esc(o["Submitted At"] || "") + "</div>" +
+          "</div>" +
+          "<button class=\"status-badge " + statusClass + "\" onclick=\"cycleStatus(" + realIdx + ")\" title=\"Click to change status\">" +
+            esc(o["Status"] || "Received") +
+          "</button>" +
+        "</div>" +
+
+        // Body — order details
+        "<div class=\"order-body\">" +
+          "<div class=\"detail-item\">" +
+            "<div class=\"dl\">Shell Color</div>" +
+            "<div class=\"dv\">" + swatch(o["Shell Color"]) + esc(o["Shell Color"] || "—") + "</div>" +
+          "</div>" +
+          "<div class=\"detail-item\">" +
+            "<div class=\"dl\">Text Color</div>" +
+            "<div class=\"dv\">" + swatch(o["Text Color"]) + esc(o["Text Color"] || "—") + "</div>" +
+          "</div>" +
+          (o["Voltmeter Color"] ? "<div class=\"detail-item\">" +
+            "<div class=\"dl\">Voltmeter Color</div>" +
+            "<div class=\"dv\">" + swatch(o["Voltmeter Color"]) + esc(o["Voltmeter Color"]) + "</div>" +
+          "</div>" : "") +
+          "<div class=\"detail-item\">" +
+            "<div class=\"dl\">Top Line</div>" +
+            "<div class=\"dv" + (!hasText || o["Top Line"] === "(none)" ? " none" : "") + "\">" +
+              esc(o["Top Line"] && o["Top Line"] !== "(none)" ? o["Top Line"] : "none") +
+            "</div>" +
+          "</div>" +
+          "<div class=\"detail-item\">" +
+            "<div class=\"dl\">Bottom Line</div>" +
+            "<div class=\"dv" + (!hasText || o["Bottom Line"] === "(none)" ? " none" : "") + "\">" +
+              esc(o["Bottom Line"] && o["Bottom Line"] !== "(none)" ? o["Bottom Line"] : "none") +
+            "</div>" +
+          "</div>" +
+          (o["Shipping Address"] && o["Shipping Address"] !== "Pickup" ?
+            "<div class=\"detail-item\" style=\"grid-column:1/-1\">" +
+              "<div class=\"dl\">Shipping</div>" +
+              "<div class=\"dv\" style=\"font-size:13px;line-height:1.5\">" + esc(o["Shipping Address"]).replace(/ \| /g, "<br>") + "</div>" +
+            "</div>" : "") +
+          (o["Notes"] ?
+            "<div class=\"detail-item\" style=\"grid-column:1/-1\">" +
+              "<div class=\"dl\">Notes</div>" +
+              "<div class=\"dv\">" + esc(o["Notes"]) + "</div>" +
+            "</div>" : "") +
+        "</div>" +
+
+        // Footer — file + printer actions
+        "<div class=\"order-footer\">" +
+          "<div class=\"file-info\">" + fileSection + "</div>" +
+          "<div class=\"order-actions\">" +
+            "<label class=\"upload-label\" id=\"ulabel-" + realIdx + "\">" +
+              (hasFile ? "🔄 Replace File" : "📁 Attach .3mf") +
+              "<input type=\"file\" accept=\".3mf,.stl,.obj,.zip\" style=\"display:none\" onchange=\"uploadFile(" + realIdx + ", this)\">" +
+            "</label>" +
+            "<button class=\"btn btn-primary btn-sm\" onclick=\"sendToPrinter(" + realIdx + ")\"" + (!hasFile ? " disabled" : "") + ">" +
+              "🖨 Send to Printer" +
+            "</button>" +
+          "</div>" +
+        "</div>" +
+
+      "</div>";
     }).join("");
   }
 
+  // ── Status cycling ───────────────────────────────────────────────────────
   const STATUS_CYCLE = ["Received", "In Design", "Printing", "Complete"];
 
   function cycleStatus(idx) {
     const order     = allOrders[idx];
     const cur       = STATUS_CYCLE.indexOf(order["Status"] || "Received");
     const newStatus = STATUS_CYCLE[(cur + 1) % STATUS_CYCLE.length];
-    const contact   = order["Contact"] || "";
-    const hasEmail  = contact.indexOf("@") > -1;
+    const hasEmail  = (order["Contact"] || "").indexOf("@") > -1;
 
-    // Cycling back to Received — just update silently
     if (newStatus === "Received" || !hasEmail) {
       applyStatusUpdate(idx, newStatus, false);
       return;
     }
-
-    // Show notify dialog for all forward transitions
     showNotifyDialog(idx, newStatus);
   }
 
@@ -464,14 +505,9 @@
 
   async function applyStatusUpdate(idx, newStatus, notify) {
     const order    = allOrders[idx];
-    const rowIndex = order._rowIndex;
-
-    // Optimistically update UI
     order["Status"] = newStatus;
     renderStats();
     renderOrders();
-
-    // Persist to sheet (and optionally email customer)
     try {
       await fetch(APPS_SCRIPT_URL, {
         method: "POST",
@@ -479,18 +515,81 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           action: "updateStatus",
-          rowIndex: rowIndex,
+          rowIndex: order._rowIndex,
           status: newStatus,
           notify: notify
         })
       });
-    } catch(_) {
-      // no-cors means we can't read errors, fail silently
-    }
+    } catch(_) {}
   }
 
+  // ── File upload ──────────────────────────────────────────────────────────
+  function uploadFile(idx, inputEl) {
+    const file = inputEl.files[0];
+    if (!file) return;
+
+    const order  = allOrders[idx];
+    const label  = document.getElementById("ulabel-" + idx);
+    if (label) { label.classList.add("busy"); label.childNodes[0].textContent = "Uploading…"; }
+
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+      const base64 = e.target.result.split(",")[1];
+      try {
+        await fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "uploadFile",
+            rowIndex: order._rowIndex,
+            fileName: file.name,
+            fileData: base64,
+            mimeType: file.type || "application/octet-stream",
+            customerName: order["Name"] || "Customer"
+          })
+        });
+      } catch(_) {}
+      // Reload after short delay so the sheet has time to update
+      setTimeout(loadOrders, 2500);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ── Send to printer ──────────────────────────────────────────────────────
+  async function sendToPrinter(idx) {
+    const order = allOrders[idx];
+    if (!order["Print File"]) {
+      alert("No print file attached to this order yet.");
+      return;
+    }
+
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = "Sending…";
+
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "sendToPrinter",
+          rowIndex: order._rowIndex
+        })
+      });
+    } catch(_) {}
+
+    // Reload after delay so timestamp shows
+    setTimeout(loadOrders, 2500);
+  }
+
+  // ── Escape HTML ──────────────────────────────────────────────────────────
   function esc(str) {
-    return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
   }
 </script>
 </body>
